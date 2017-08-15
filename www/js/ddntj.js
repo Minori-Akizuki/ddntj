@@ -1,6 +1,6 @@
 
 // サーバへの接続
-var socketio = io.connect('http://localhost:3000');
+var socketio = io.connect(ddntj.constants.SERVER_URL);
 
 // 1.イベントとコールバックの定義
 socketio.on("connected", function(name) {});
