@@ -1,2 +1,2 @@
 # ddnty
-Playing onlone TRPG with HTML5
+Playing online TRPG with HTML5
