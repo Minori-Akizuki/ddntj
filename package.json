@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/Minori-Akizuki/ddnty#readme",
   "dependencies": {
+    "jquery": "^3.2.1",
+    "log4js": "^2.3.3",
     "socket.io": "^2.0.3"
   },
   "devDependencies": {
