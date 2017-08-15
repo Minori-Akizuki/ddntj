@@ -1,0 +1,51 @@
+body{
+  font-family: "Trebuchet MS", sans-serif;
+  margin: 0px;
+}
+
+#header{
+  margin: 0px;
+  padding: 5px;
+  background-color: #ccffcc  
+}
+#header ul{
+  font-size:0;
+  padding: 0px;
+  width : auto;
+  text-align: left;
+  float: left;
+}
+#header li{
+  font-size: 20px;
+  display: inline-block;
+  margin-left : 5px;
+  margin-right : 5px;
+}
+#header #title{
+  text-align: right;
+}
+
+#chatbox{
+  width: 800px;
+  height: 150px;
+  border: solid #808080;
+  padding: 0.5em;
+}
+#chatmessages{
+  overflow-y: scroll;
+  width:100%;
+  height: 85%;
+  font-size: 12px;
+}
+.dropArea {
+    padding: 0;
+    margin: 0;
+}
+.dropArea .draggable {
+  list-style: none;
+  margin: 10px;
+  padding: 0;
+  width: 300px;
+  height: 100px;
+  background-color: #A2F9AF;
+}

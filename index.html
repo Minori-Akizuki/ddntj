@@ -1,0 +1,54 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>どどんてぃ</title>
+  <link href="/css/jquery-ui.css" rel="stylesheet">
+  <link href="/css/ddntj.css" rel="stylesheet">
+</head>
+<body>
+  <div id="header">
+    <ul>
+      <li>menu</li>
+      <li>menu</li>
+      <li>menu</li>
+    </ul>
+    <div id="title">どどんてぃ</div>
+  </div>
+  <div id="chatbox" class="draggable ui-widget-content">
+    <!-- 名前 -->
+    <input
+      v-model="yourname"
+    >
+    <!-- システム選択 -->
+    <select v-model="selectedSystem" name="systems" size="1">
+        <option v-for="system in systems">{{system}}</option>
+    </select>  
+    <input
+      v-model="inputbox"
+      v-on:keyup.enter="sendMessage(yourname,selectedSystem)"
+      placeholder="input message here"
+      style="width:400px"
+    >
+    <button 
+      @click="sendMessage(yourname,selectedSystem)"
+      id="button"
+    >
+    send Message
+    </button>
+    <div id="chatmessages">
+      <div v-for="message in messages">{{message.text}}</div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://unpkg.com/vue"></script>
+  <script src="/js/dicebot.js"></script>
+  <script src="/js/ddntj.js"></script>
+  <script>
+    $("#button").button();
+    $(".draggable").draggable()
+    $(".draggable").resizable();
+  </script>
+</body>
+</html>

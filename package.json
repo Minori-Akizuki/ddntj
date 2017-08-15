@@ -1,0 +1,26 @@
+{
+  "name": "ddntj",
+  "version": "1.0.0",
+  "description": "Playing onlone TRPG with HTML5",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Minori-Akizuki/ddnty.git"
+  },
+  "author": "Minori Akizuki",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Minori-Akizuki/ddnty/issues"
+  },
+  "homepage": "https://github.com/Minori-Akizuki/ddnty#readme",
+  "dependencies": {
+    "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "vue-loader": "^13.0.4",
+    "webpack": "^3.5.4"
+  }
+}
