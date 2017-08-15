@@ -1,6 +1,7 @@
 
 // サーバへの接続
-var socketio = io.connect(ddntj.constants.SERVER_URL);
+var serverUrl = location.href;
+var socketio = io.connect(serverUrl);
 
 // 1.イベントとコールバックの定義
 socketio.on("connected", function(name) {});

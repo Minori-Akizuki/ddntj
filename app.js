@@ -77,7 +77,7 @@ io.sockets.on("connection", function (socket) {
           msg=data.text;
         }
         systemLogger.debug(msg);
-        msg = msg + data.name;
+        msg = `${data.name} : ${msg}`;
         io.sockets.emit("publish", {'text': msg});    
       },
       data.system,
