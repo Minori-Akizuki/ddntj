@@ -35,6 +35,7 @@ var chatbox = new Vue({
     },
     sendMessage: function(name, system){
       var textInput = this.inputbox;
+      if(textInput === ''){ return; }
       var _msg = "[" + name + "] " + textInput;
       socketio.emit(
         "publish",
