@@ -22,23 +22,24 @@
       v-model="yourname"
     >
     <!-- システム選択 -->
-    <select v-model="selectedSystem" name="systems" size="1">
+    <select v-model="selectedSystem" name="systems" size="1" >
+        <option selected></option>
         <option v-for="system in systems">{{system}}</option>
-    </select>  
+    </select>
     <input
       v-model="inputbox"
       v-on:keyup.enter="sendMessage(yourname,selectedSystem)"
       placeholder="input message here"
       style="width:400px"
     >
-    <button 
+    <button
       @click="sendMessage(yourname,selectedSystem)"
       id="button"
     >
     send Message
     </button>
     <div id="chatmessages">
-      <div v-for="message in messages">{{message.text}}</div>
+      <div v-for="message in messages" v-cloak>{{message.text}}</div>
     </div>
   </div>
   <script src="/js/constants.js"></script>
