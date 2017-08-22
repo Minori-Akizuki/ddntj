@@ -20,10 +20,12 @@
   "dependencies": {
     "jquery": "^3.2.1",
     "log4js": "^2.3.3",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.3",
+    "vue": "^2.4.2"
   },
   "devDependencies": {
     "vue-loader": "^13.0.4",
-    "webpack": "^3.5.4"
+    "vue-router": "^2.7.0",
+    "webpack": "^3.5.5"
   }
 }
