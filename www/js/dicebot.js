@@ -1,4 +1,5 @@
-export var dicebot = dicebot || {};
+'use strict';
+var dicebot = dicebot || {};
 
 dicebot.systems = [];
 
@@ -14,3 +15,5 @@ dicebot.getsystems = function(callback){
     );
   }
 }
+
+export default dicebot;

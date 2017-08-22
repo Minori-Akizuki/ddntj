@@ -1,4 +1,6 @@
-import dicebot from './dicebot'
+'use strict';
+import dicebot from './dicebot';
+import Vue from 'vue';
 
 // サーバへの接続
 var serverUrl = location.href;
@@ -71,3 +73,6 @@ chatbox.initname(defname);
 chatbox.addMessage("貴方は" + defname + "として入室しました");
 start(defname);
 
+$("#button").button();
+$(".draggable").draggable()
+$(".draggable").resizable();
