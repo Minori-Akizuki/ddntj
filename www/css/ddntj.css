@@ -42,8 +42,8 @@ body{
   right: 5px;
 }
 .dropArea {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 .dropArea .draggable {
   list-style: none;

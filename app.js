@@ -24,7 +24,7 @@ var server = require("http").createServer(
       output = fs.readFileSync('./index.html', "utf-8");
       systemLogger.debug('return top page');
       res.end(output);
-      return;   
+      return;
     }
     // 各種リソース
     try{
@@ -35,15 +35,15 @@ var server = require("http").createServer(
       }else if(requestpath.indexOf('/css/images/')>=0){
         res.writeHead(200, {"Content-Type":"image/png"});
       }else if(requestpath.indexOf('/css/')>=0){
-        res.writeHead(200, {"Content-Type":"text/css"});        
+        res.writeHead(200, {"Content-Type":"text/css"});
       }
-      output = fs.readFileSync(requestpath, "utf-8");    
+      output = fs.readFileSync(requestpath, "utf-8");
     } catch (err){
       res.writeHead(404,{'Content-Type': 'text/plain'})
       res.write(`the URL ${requestpath} is not found!`);
       return res.end();
     }
-    res.end(output); 
+    res.end(output);
     return;
   }
 ).listen(
@@ -78,7 +78,7 @@ io.sockets.on("connection", function (socket) {
         }
         systemLogger.debug(msg);
         msg = `${data.name} : ${msg}`;
-        io.sockets.emit("publish", {'text': msg});    
+        io.sockets.emit("publish", {'text': msg});
       },
       data.system,
       data.text
