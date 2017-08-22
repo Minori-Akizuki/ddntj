@@ -7,7 +7,7 @@ var socketio = io.connect(serverUrl);
 socketio.on("connected", function(name) {});
 socketio.on("publish", function (data) {
   console.log(data);
-  addMessage(data); 
+  addMessage(data);
 });
 socketio.on("disconnect", function () {});
 
@@ -19,7 +19,8 @@ var chatbox = new Vue({
     totalMessageId: 0 ,
     yourname: '',
     inputbox: "",
-    systems: []
+    systems: [],
+    selectedSystem: 'DiceBot'
   },
   created: function(){
     dicebot.getsystems(function(systems){
