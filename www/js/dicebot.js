@@ -1,4 +1,4 @@
-var dicebot = dicebot || {};
+export var dicebot = dicebot || {};
 
 dicebot.systems = [];
 

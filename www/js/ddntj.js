@@ -1,3 +1,4 @@
+import dicebot from './dicebot'
 
 // サーバへの接続
 var serverUrl = location.href;
