@@ -16,19 +16,25 @@ var server = require("http").createServer(
   function(req, res) {
     var requestpath =  req.url;
     var output;
-    systemLogger.info(`erquest to ${requestpath}`);
+    systemLogger.info(`request to ${requestpath}`);
 
     if(requestpath==='/'){
       // トップページ
       res.writeHead(200, {"Content-Type":"text/html"});
-      output = fs.readFileSync('./index.html', "utf-8");
+      output = fs.readFileSync('./dist/index.html', "utf-8");
       systemLogger.debug('return top page');
       res.end(output);
       return;
     }
     // 各種リソース
     try{
-      requestpath = './www' + requestpath;
+      if (requestpath.indexOf('/index.js')>=0) {
+        res.writeHead(200, {"Content-Type": "text/javascript"});
+        output = fs.readFileSync('.'+requestpath, "utf-8");
+        res.end(output);
+        return;
+      }
+      requestpath = './dist' + requestpath;
       if(requestpath.indexOf('/js/')>=0){
         // JS群
         res.writeHead(200, {"Content-Type":"text/javascript"});
