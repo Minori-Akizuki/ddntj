@@ -1,7 +1,7 @@
 <template>
   <div>
-    <chatbox :yourname="yourname" :systems="systems"
-             :selected="selectedSystem" v-on:systemChanged="changeSystem"></chatbox>
+    <chatbox :yourname.sync="yourname" :systems="systems"
+             :selected.sync="selectedSystem" v-on:systemChanged="changeSystem"></chatbox>
   </div>
 </template>
 <script>

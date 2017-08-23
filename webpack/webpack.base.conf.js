@@ -7,8 +7,8 @@ module.exports = {
     'index': './www/js/ddntj.js'
   },
   output: {
-    path: __dirname,
-    filename: '../dist/[name].js'
+    path: path.join(__dirname, '../dist'),
+    filename: '[name].js'
   },
   module: {
     loaders: [
@@ -41,13 +41,12 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './www/index.html',
-      filename: path.join(__dirname, '../dist/' ,'index.html'),
-      inject: true,
-      excludeChunks: ['main']
+      filename: 'index.html',
+      inject: true
     }),
     new CopyWebpackPlugin([{
       from: './www/css',
-      to: '../dist/css'
+      to: 'css'
     }])
   ]
 };
