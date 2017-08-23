@@ -6,7 +6,7 @@ body{
 #header{
   margin: 0px;
   padding: 5px;
-  background-color: #ccffcc  
+  background-color: #ccffcc;
 }
 #header ul{
   font-size:0;
@@ -52,4 +52,8 @@ body{
   width: 300px;
   height: 100px;
   background-color: #A2F9AF;
+}
+
+[v-cloak] {
+  display:none;
 }
