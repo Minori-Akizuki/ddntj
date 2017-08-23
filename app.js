@@ -28,14 +28,8 @@ var server = require("http").createServer(
     }
     // 各種リソース
     try{
-      if (requestpath.indexOf('/index.js')>=0) {
-        res.writeHead(200, {"Content-Type": "text/javascript"});
-        output = fs.readFileSync('.'+requestpath, "utf-8");
-        res.end(output);
-        return;
-      }
       requestpath = './dist' + requestpath;
-      if(requestpath.indexOf('/js/')>=0){
+      if(requestpath.indexOf('/js/')>=0 || /.js$/.test(requestpath)){
         // JS群
         res.writeHead(200, {"Content-Type":"text/javascript"});
       }else if(requestpath.indexOf('/css/images/')>=0){

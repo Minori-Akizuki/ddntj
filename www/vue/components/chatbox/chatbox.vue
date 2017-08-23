@@ -2,7 +2,7 @@
   <div id="chatbox" class="draggable ui-widget-content">
     <!-- 名前 -->
     <input
-      v-model="yourname"
+      v-model="name"
     >
     <!-- システム選択 -->
     <select v-model="selectedSystem" name="systems" size="1">
@@ -38,7 +38,8 @@ export default {
       messages: [],
       totalMessageId: 0 ,
       inputbox: "",
-      selectedSystem: this.selected
+      selectedSystem: this.selected,
+      name: this.yourname
     }
   },
   props: [
@@ -74,12 +75,17 @@ export default {
         }
       );
       this.inputbox = '';
-    },
+    }
   },
   watch: {
-    selectedSystem: function(newSystem, oldSystem) {
-      if (newSystem !== oldSystem) {
-        this.$emit('systemChanged', newSystem);
+    selectedSystem: function(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.$emit('update:selected', newVal);
+      }
+    },
+    name: function(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.$emit('update:yourname', newVal);
       }
     }
   }
