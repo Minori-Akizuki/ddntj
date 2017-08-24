@@ -1,7 +1,7 @@
 <template>
   <div>
     <chatbox :yourname.sync="yourname" :systems="systems"
-             :selected.sync="selectedSystem" v-on:systemChanged="changeSystem"></chatbox>
+             :selected.sync="selectedSystem"></chatbox>
   </div>
 </template>
 <script>
@@ -29,9 +29,6 @@ export default {
       this.yourname = defname
       socketio.emit('connected', defname);
     },
-    changeSystem: function(newSystem) {
-      this.selectedSystem = newSystem;
-    }
   },
   created: function() {
     dicebot.getsystems((systems) => {
