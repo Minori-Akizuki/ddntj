@@ -10,6 +10,9 @@ var systemLogger = Log4js.getLogger();
 var constants = require('./js/constants.js').constants();
 var dicebot = require('./js/dicebot.js').dicebot();
 
+// パブリックパス
+const publicPath = './dist'
+
 // サーバの初期化
 var fs = require("fs");
 var server = require("http").createServer(
@@ -21,14 +24,14 @@ var server = require("http").createServer(
     if(requestpath==='/'){
       // トップページ
       res.writeHead(200, {"Content-Type":"text/html"});
-      output = fs.readFileSync('./dist/index.html', "utf-8");
+      output = fs.readFileSync(publicPath + '/index.html', "utf-8");
       systemLogger.debug('return top page');
       res.end(output);
       return;
     }
     // 各種リソース
     try{
-      requestpath = './dist' + requestpath;
+      requestpath = publicPath + requestpath;
       if(requestpath.indexOf('/js/')>=0 || /.js$/.test(requestpath)){
         // JS群
         res.writeHead(200, {"Content-Type":"text/javascript"});
