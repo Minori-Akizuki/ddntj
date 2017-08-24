@@ -10,40 +10,43 @@ var systemLogger = Log4js.getLogger();
 var constants = require('./js/constants.js').constants();
 var dicebot = require('./js/dicebot.js').dicebot();
 
+// パブリックパス
+const publicPath = './dist'
+
 // サーバの初期化
 var fs = require("fs");
 var server = require("http").createServer(
   function(req, res) {
     var requestpath =  req.url;
     var output;
-    systemLogger.info(`erquest to ${requestpath}`);
+    systemLogger.info(`request to ${requestpath}`);
 
     if(requestpath==='/'){
       // トップページ
       res.writeHead(200, {"Content-Type":"text/html"});
-      output = fs.readFileSync('./index.html', "utf-8");
+      output = fs.readFileSync(publicPath + '/index.html', "utf-8");
       systemLogger.debug('return top page');
       res.end(output);
-      return;   
+      return;
     }
     // 各種リソース
     try{
-      requestpath = './www' + requestpath;
-      if(requestpath.indexOf('/js/')>=0){
+      requestpath = publicPath + requestpath;
+      if(requestpath.indexOf('/js/')>=0 || /.js$/.test(requestpath)){
         // JS群
         res.writeHead(200, {"Content-Type":"text/javascript"});
       }else if(requestpath.indexOf('/css/images/')>=0){
         res.writeHead(200, {"Content-Type":"image/png"});
       }else if(requestpath.indexOf('/css/')>=0){
-        res.writeHead(200, {"Content-Type":"text/css"});        
+        res.writeHead(200, {"Content-Type":"text/css"});
       }
-      output = fs.readFileSync(requestpath, "utf-8");    
+      output = fs.readFileSync(requestpath, "utf-8");
     } catch (err){
       res.writeHead(404,{'Content-Type': 'text/plain'})
       res.write(`the URL ${requestpath} is not found!`);
       return res.end();
     }
-    res.end(output); 
+    res.end(output);
     return;
   }
 ).listen(
@@ -78,7 +81,7 @@ io.sockets.on("connection", function (socket) {
         }
         systemLogger.debug(msg);
         msg = `${data.name} : ${msg}`;
-        io.sockets.emit("publish", {'text': msg});    
+        io.sockets.emit("publish", {'text': msg});
       },
       data.system,
       data.text
