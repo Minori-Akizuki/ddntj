@@ -1,28 +1,34 @@
 <template>
   <div id="chatbox" class="draggable ui-widget-content">
-    <!-- 名前 -->
-    <input
-      v-model="name"
-    >
-    <!-- システム選択 -->
-    <select v-model="selectedSystem" name="systems" size="1">
-      <option selected></option>
-      <option v-for="system in systems" :key="system">{{system}}</p></option>
-    </select>
-    <input
-      v-model="inputbox"
-      v-on:keyup.enter="sendMessage(yourname,selectedSystem)"
-      placeholder="input message here"
-      style="width:400px"
-    >
-    <button
-      @click="sendMessage(yourname,selectedSystem)"
-      id="button"
-    >
-    send Message
-    </button>
-    <div id="chatmessages">
-      <div v-for="message in messages" v-cloak :key="message.id">{{message.text}}</div>
+    <div id="chatmessages" @scroll="manageUpdateFlag()">
+      <div class="spacer"></div>
+      <div class="message"v-for="message in messages" v-cloak :key="message.id">{{message.text}}</div>
+    </div>
+    <div class="input-settings">
+      <!-- 名前 -->
+      <input
+        v-model="name"
+      >
+      <!-- システム選択 -->
+      <select v-model="selectedSystem" name="systems" size="1">
+        <option selected></option>
+        <option v-for="system in systems" :key="system">{{system}}</p></option>
+      </select>
+    </div>
+    <div class="input-area">
+      <textarea
+        v-model="inputbox"
+        @keydown.enter="sendMessage"
+        placeholder="input message here"
+        class="input-box"
+      />
+      <button
+        @click="sendMessage"
+        id="button"
+        class="enter-button"
+      >
+      send Message
+      </button>
     </div>
   </div>
 </template>
@@ -39,7 +45,8 @@ export default {
       totalMessageId: 0 ,
       inputbox: "",
       selectedSystem: this.selected,
-      name: this.yourname
+      name: this.yourname,
+      update: true
     }
   },
   props: [
@@ -57,15 +64,31 @@ export default {
   },
   methods:{
     addMessage: function(msg){
+      const messageBox = document.getElementById('chatmessages');
       this.messages.push({
         id:(this.totalMessageId++),
         text:msg
       });
+      if (this.update) {
+        // メッセージボックスの更新後に発火するようにsetTimeoutでプロセスを切る
+        window.setTimeout(function() {
+          messageBox.scrollTop = messageBox.scrollHeight - messageBox.clientHeight;
+        }, 0);
+      }
     },
-    sendMessage: function(name, system){
-      var textInput = this.inputbox;
+    sendMessage: function(event){
+      console.log(event.getModifierState('Shift'))
+      if (event.getModifierState('Shift')) {
+        return;
+      }
+      event.stopPropagation();
+      event.preventDefault();
+      const textInput = this.inputbox;
+      const name = this.yourname;
+      const system = this.selectedSystem;
+
       if(textInput === ''){ return; }
-      var _msg = "[" + name + "] " + textInput;
+      const _msg = "[" + name + "] " + textInput;
       socketio.emit(
         "publish",
         {
@@ -75,6 +98,15 @@ export default {
         }
       );
       this.inputbox = '';
+    },
+    manageUpdateFlag: function() {
+      const messageBox = document.getElementById('chatmessages');
+
+      if (messageBox.scrollTop === messageBox.scrollHeight - messageBox.clientHeight) {
+        this.update = true;
+      } else {
+        this.update = false;
+      }
     }
   },
   watch: {
@@ -91,3 +123,61 @@ export default {
   }
 }
 </script>
+<style>
+#chatbox{
+  border: solid #808080;
+  bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+  left: 10px;
+  padding: 0.5em;
+  position: absolute;
+  width: 800px;
+}
+
+#chatmessages{
+  background: #fff;
+  display: flex;
+  flex: 1 0 0px;
+  flex-direction: column;
+  font-size: 12px;
+  margin: 0 0 5px;
+  overflow-y: scroll;
+  position: relative;
+  white-space: pre-line;
+}
+
+.input-area {
+  align-items: stretch;
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.input-box {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 0 0px;
+  height: 50px;
+  padding: 0;
+  resize: none
+}
+
+.enter-button {
+  flex: 0 0 auto;
+}
+
+.input-settings {
+  flex: 0 0 auto;
+  margin-bottom: 5px;
+}
+
+.message {
+  flex: 0 0 auto;
+}
+
+.spacer {
+  flex: 1 0 0px;
+}
+</style>
+
