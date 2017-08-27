@@ -25,22 +25,6 @@ body{
   text-align: right;
 }
 
-#chatbox{
-  width: 800px;
-  height: 150px;
-  border: solid #808080;
-  padding: 0.5em;
-  position: relative;
-}
-#chatmessages{
-  position: absolute;
-  overflow-y: scroll;
-  font-size: 12px;
-  top: 70px;
-  bottom: 5px;
-  left: 5px;
-  right: 5px;
-}
 .dropArea {
   padding: 0;
   margin: 0;
