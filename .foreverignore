@@ -1,0 +1,6 @@
+**/www/*
+**/webpack/*
+**/dist/*
+**/.vscode/*
+**/node_modules/*
+**/logs/*

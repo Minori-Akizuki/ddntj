@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+    "start": "forever start -w app.js && npm run watch",
+    "stop": "forever stop app.js",
+    "watch": "NODE_ENV=dev webpack --watch --config webpack/webpack.base.conf.js",
     "build": "NODE_ENV=dev webpack --config webpack/webpack.base.conf.js"
   },
   "repository": {
@@ -19,6 +21,7 @@
   },
   "homepage": "https://github.com/Minori-Akizuki/ddnty#readme",
   "dependencies": {
+    "forever": "^0.15.3",
     "jquery": "^3.2.1",
     "log4js": "^2.3.3",
     "socket.io": "^2.0.3",
