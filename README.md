@@ -4,9 +4,9 @@ Playing online TRPG with HTML5
 # usage
 
 node.js の環境を用意してから、落としたディレクトリで以下を実行すると8080番ポートでサーバが立ち上がります。
-```
+
+```bash
 npm install
-npm build
 npm start
 ```
 
