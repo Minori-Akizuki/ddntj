@@ -71,9 +71,10 @@ export default {
         text:msg
       });
       if (this.update) {
-        Vue.nextTick(function() {
+        this.$nextTick(function() {
+          const messageBox = document.getElementById('chatmessages');
           messageBox.scrollTop = messageBox.scrollHeight - messageBox.clientHeight;
-        }, 0);
+        });
       }
     },
     sendMessage: function(event){
@@ -101,7 +102,6 @@ export default {
     },
     manageUpdateFlag: function() {
       const messageBox = document.getElementById('chatmessages');
-
       if (messageBox.scrollTop === messageBox.scrollHeight - messageBox.clientHeight) {
         this.update = true;
       } else {
