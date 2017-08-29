@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "forever start -w app.js && npm run watch",
+    "start": "forever start app.js",
     "stop": "forever stop app.js",
     "watch": "NODE_ENV=dev webpack --watch --config webpack/webpack.base.conf.js",
-    "build": "NODE_ENV=prod webpack --config webpack/webpack.base.conf.js",
+    "build": "NODE_ENV=production webpack --config webpack/webpack.base.conf.js",
     "build:dev": "NODE_ENV=dev webpack --config webpack/webpack.base.conf.js",
     "heroku-postbuild": "npm run build",
-    "heroku-prebuild": "npm install --only=dev"
+    "heroku-prebuild": "npm install --only=dev",
+    "prestart": "webpack --config webpack/webpack.base.conf.js"
   },
   "repository": {
     "type": "git",
