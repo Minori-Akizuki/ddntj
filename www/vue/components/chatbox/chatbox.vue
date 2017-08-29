@@ -34,6 +34,7 @@
 </template>
 <script>
 import io from 'socket.io-client';
+import Vue from 'vue';
 
 const serverUrl = location.href;
 const socketio = io.connect(serverUrl);
@@ -70,8 +71,7 @@ export default {
         text:msg
       });
       if (this.update) {
-        // メッセージボックスの更新後に発火するようにsetTimeoutでプロセスを切る
-        window.setTimeout(function() {
+        Vue.nextTick(function() {
           messageBox.scrollTop = messageBox.scrollHeight - messageBox.clientHeight;
         }, 0);
       }

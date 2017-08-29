@@ -1,14 +1,17 @@
 {
   "name": "ddntj",
   "version": "1.0.0",
-  "description": "Playing onlone TRPG with HTML5",
+  "description": "Playing online TRPG with HTML5",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "forever start -w app.js && npm run watch",
     "stop": "forever stop app.js",
     "watch": "NODE_ENV=dev webpack --watch --config webpack/webpack.base.conf.js",
-    "build": "NODE_ENV=dev webpack --config webpack/webpack.base.conf.js"
+    "build": "NODE_ENV=prod webpack --config webpack/webpack.base.conf.js",
+    "build:dev": "NODE_ENV=dev webpack --config webpack/webpack.base.conf.js",
+    "heroku-postinstall": "npm run build",
+    "heroku-preinstall": "npm install --only=dev"
   },
   "repository": {
     "type": "git",
