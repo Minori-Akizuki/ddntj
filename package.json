@@ -10,8 +10,8 @@
     "watch": "NODE_ENV=dev webpack --watch --config webpack/webpack.base.conf.js",
     "build": "NODE_ENV=prod webpack --config webpack/webpack.base.conf.js",
     "build:dev": "NODE_ENV=dev webpack --config webpack/webpack.base.conf.js",
-    "heroku-postinstall": "npm run build",
-    "heroku-preinstall": "npm install --only=dev"
+    "heroku-postbuild": "npm run build",
+    "heroku-prebuild": "npm install --only=dev"
   },
   "repository": {
     "type": "git",
