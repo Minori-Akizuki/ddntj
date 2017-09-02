@@ -1,0 +1,17 @@
+{
+  "name": "ddntj",
+  "description": "Playing online TRPG with HTML5",
+  "keywords": [
+    "HTML5",
+    "Node.js",
+    "TRPG"
+  ],
+  "website": "https://github.com/Minori-Akizuki/ddnty#readme",
+  "repository": "https://github.com/Minori-Akizuki/ddnty",
+  "success_url": "/",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "addons": [
+  ]
+}

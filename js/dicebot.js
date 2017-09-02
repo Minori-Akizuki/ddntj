@@ -3,8 +3,8 @@ var Log4js = require('log4js');
 Log4js.configure('js/config/log-config.json');
 var systemLogger = Log4js.getLogger();
 
-var http = require('http');
-const BOTURL = 'http://www2.taruki.com/bcdice-api/v1/'
+var https = require('https');
+const BOTURL = 'https://www2.taruki.com/bcdice-api/v1/'
 // http://www2.taruki.com/bcdice-api/v1/diceroll?system=Cthulhu&command=2d10>10
 
 exports.dicebot = function(){
@@ -15,7 +15,7 @@ exports.dicebot = function(){
       var _command = encodeURIComponent(command);
       var reqUrl = `${BOTURL}diceroll?system=${system}&command=${_command}`;
       systemLogger.debug(`requrl : ${reqUrl}`);
-      http.get(
+      https.get(
         reqUrl,
         (res)=>{
           var body='';
@@ -35,7 +35,7 @@ exports.dicebot = function(){
 
     systeminfo : function(callback, system){
       $.getJSON(
-        'http://www2.taruki.com/bcdice-api/v1/systeminfo?callback=?',
+        'https://www2.taruki.com/bcdice-api/v1/systeminfo?callback=?',
         {
           'system': system
         }

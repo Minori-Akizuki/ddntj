@@ -34,6 +34,7 @@
 </template>
 <script>
 import io from 'socket.io-client';
+import Vue from 'vue';
 
 const serverUrl = location.href;
 const socketio = io.connect(serverUrl);
@@ -70,10 +71,10 @@ export default {
         text:msg
       });
       if (this.update) {
-        // メッセージボックスの更新後に発火するようにsetTimeoutでプロセスを切る
-        window.setTimeout(function() {
+        this.$nextTick(function() {
+          const messageBox = document.getElementById('chatmessages');
           messageBox.scrollTop = messageBox.scrollHeight - messageBox.clientHeight;
-        }, 0);
+        });
       }
     },
     sendMessage: function(event){
@@ -101,7 +102,6 @@ export default {
     },
     manageUpdateFlag: function() {
       const messageBox = document.getElementById('chatmessages');
-
       if (messageBox.scrollTop === messageBox.scrollHeight - messageBox.clientHeight) {
         this.update = true;
       } else {
