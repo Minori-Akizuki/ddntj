@@ -1,11 +1,14 @@
 <template>
   <div>
+		<rpgmap>
+		</rpgmap>
     <chatbox :yourname.sync="yourname" :systems="systems"
              :selected.sync="selectedSystem"></chatbox>
   </div>
 </template>
 <script>
 import chatbox from './components/chatbox/chatbox';
+import rpgmap from './components/map/map';
 import dicebot from '../js/dicebot';
 import io from 'socket.io-client';
 
@@ -21,7 +24,8 @@ export default {
     }
   },
   components: {
-    chatbox
+    chatbox,
+		rpgmap
   },
   methods: {
     initName: function() {

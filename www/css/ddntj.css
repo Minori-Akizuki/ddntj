@@ -41,3 +41,13 @@ body{
 [v-cloak] {
   display:none;
 }
+
+.chit{
+	width: 20px;
+  height: 20px;
+}
+
+.map{
+  width: 1000px;
+  height: 1000px;
+}
