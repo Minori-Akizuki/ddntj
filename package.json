@@ -1,12 +1,17 @@
 {
   "name": "ddntj",
   "version": "1.0.0",
-  "description": "Playing onlone TRPG with HTML5",
+  "description": "Playing online TRPG with HTML5",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "build": "NODE_ENV=dev webpack --config webpack/webpack.base.conf.js"
+    "watch": "NODE_ENV=dev webpack --watch --config webpack/webpack.base.conf.js",
+    "build": "NODE_ENV=production webpack --config webpack/webpack.base.conf.js",
+    "build:dev": "NODE_ENV=dev webpack --config webpack/webpack.base.conf.js",
+    "heroku-postbuild": "npm run build",
+    "heroku-prebuild": "npm install --only=dev",
+    "prestart": "webpack --config webpack/webpack.base.conf.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +24,7 @@
   },
   "homepage": "https://github.com/Minori-Akizuki/ddnty#readme",
   "dependencies": {
+    "forever": "^0.15.3",
     "jquery": "^3.2.1",
     "log4js": "^2.3.3",
     "socket.io": "^2.0.3",

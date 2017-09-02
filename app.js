@@ -50,7 +50,7 @@ var server = require("http").createServer(
     return;
   }
 ).listen(
-  constants.LISTEN_PORT,
+  process.env.PORT || constants.LISTEN_PORT,
   () => {systemLogger.info(`listening on *:${constants.LISTEN_PORT}`);}
 );
 
