@@ -14,8 +14,8 @@ var dicebot = require('./js/dicebot.js').dicebot();
 const publicPath = './dist'
 
 // サーバの初期化
-var fs = require("fs");
-var server = require("http").createServer(
+var fs = require('fs');
+var server = require('http').createServer(
   function(req, res) {
     var requestpath =  req.url;
     var output;
@@ -23,8 +23,8 @@ var server = require("http").createServer(
 
     if(requestpath==='/'){
       // トップページ
-      res.writeHead(200, {"Content-Type":"text/html"});
-      output = fs.readFileSync(publicPath + '/index.html', "utf-8");
+      res.writeHead(200, {'Content-Type':'text/html'});
+      output = fs.readFileSync(publicPath + '/index.html', 'utf-8');
       systemLogger.debug('return top page');
       res.end(output);
       return;
@@ -34,13 +34,13 @@ var server = require("http").createServer(
       requestpath = publicPath + requestpath;
       if(requestpath.indexOf('/js/')>=0 || /.js$/.test(requestpath)){
         // JS群
-        res.writeHead(200, {"Content-Type":"text/javascript"});
+        res.writeHead(200, {'Content-Type':'text/javascript'});
       }else if(requestpath.indexOf('/css/images/')>=0){
-        res.writeHead(200, {"Content-Type":"image/png"});
+        res.writeHead(200, {'Content-Type':'image/png'});
       }else if(requestpath.indexOf('/css/')>=0){
-        res.writeHead(200, {"Content-Type":"text/css"});
+        res.writeHead(200, {'Content-Type':'text/css'});
       }
-      output = fs.readFileSync(requestpath, "utf-8");
+      output = fs.readFileSync(requestpath, 'utf-8');
     } catch (err){
       res.writeHead(404,{'Content-Type': 'text/plain'})
       res.write(`the URL ${requestpath} is not found!`);
@@ -55,20 +55,20 @@ var server = require("http").createServer(
 );
 
 // socket.io イベント定義 (分割できないかな……)
-var io = require("socket.io").listen(server);
+var io = require('socket.io').listen(server);
 
 // 2.イベントの定義
-io.sockets.on("connection", function (socket) {
+io.sockets.on('connection', function (socket) {
 
   // 接続開始カスタムイベント(接続元ユーザを保存し、他ユーザへ通知)
-  socket.on("connected", function (name) {
+  socket.on('connected', function (name) {
     systemLogger.info(`connect : ${name}`);
-    var msg = name + "が入室しました";
-    io.sockets.emit("publish", {'text': msg});
+    var msg = name + 'が入室しました';
+    io.sockets.emit('publish', {'text': msg});
   });
 
   // メッセージ送信カスタムイベント
-  socket.on("publish", function (data) {
+  socket.on('publish', function (data) {
     var msg;
     systemLogger.info(`${data.name} : ${data.system} : ${data.text}`);
     dicebot.roll(
@@ -81,7 +81,7 @@ io.sockets.on("connection", function (socket) {
         }
         systemLogger.debug(msg);
         msg = `${data.name} : ${msg}`;
-        io.sockets.emit("publish", {'text': msg});
+        io.sockets.emit('publish', {'text': msg});
       },
       data.system,
       data.text
@@ -89,7 +89,13 @@ io.sockets.on("connection", function (socket) {
   });
 
   // 接続終了組み込みイベント(接続元ユーザを削除し、他ユーザへ通知)
-  socket.on("disconnect", function () {
+  socket.on('disconnect', function () {
+    // nothing todo
+  });
 
+  // チットのアップデートイベント
+  socket.on('publish.requestChitUpdated',function(chit){
+    systemLogger(`chit update ${chit}`);
+    io.sockets.emit('publish.chitUpdated',chit);
   });
 });

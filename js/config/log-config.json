@@ -8,7 +8,7 @@
     "categories": {
         "default": { 
             "appenders" : [ "out", "app" ], 
-            "level": "off"
+            "level": "debug"
         }
     }
 }
