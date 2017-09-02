@@ -13,4 +13,4 @@ new Vue({
 
 $("#button").button();
 $(".draggable").draggable()
-$(".draggable").resizable();
+$(".resizable").resizable();
