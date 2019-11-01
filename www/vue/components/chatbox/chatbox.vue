@@ -2,7 +2,7 @@
   <div id="chatbox" class="draggable resizable ui-widget-content">
     <div id="chatmessages" @scroll="manageUpdateFlag()">
       <div class="spacer"></div>
-      <div class="message"v-for="message in messages" v-cloak :key="message.id">{{message.text}}</div>
+      <div class="message" v-for="message in messages" v-cloak :key="message.id">{{message.text}}</div>
     </div>
     <div class="input-settings">
       <!-- 名前 -->
@@ -12,7 +12,7 @@
       <!-- システム選択 -->
       <select v-model="selectedSystem" name="systems" size="1">
         <option selected></option>
-        <option v-for="system in systems" :key="system">{{system}}</p></option>
+        <option v-for="system in systems" :key="system">{{system}}</option>
       </select>
     </div>
     <div class="input-area">

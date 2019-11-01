@@ -7,7 +7,7 @@
 		   v-for="chit in chits"
 			 v-bind:key="chit.id"
 			 class="draggable ui-widget-content"
-		>{{chit.name}}</div>
+		>{{chit.id}}{{chit.name}}</div>
   </div>
 </template>
 
