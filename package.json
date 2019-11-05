@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Minori-Akizuki/ddnty.git"
+    "url": "git+https://github.com/Minori-Akizuki/ddntj.git"
   },
   "author": "Minori Akizuki",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/Minori-Akizuki/ddnty/issues"
+    "url": "https://github.com/Minori-Akizuki/ddntj/issues"
   },
-  "homepage": "https://github.com/Minori-Akizuki/ddnty#readme",
+  "homepage": "https://github.com/Minori-Akizuki/ddntj#readme",
   "dependencies": {
     "cradle": "^0.7.1",
     "forever": "^0.15.3",

@@ -6,8 +6,8 @@
     "Node.js",
     "TRPG"
   ],
-  "website": "https://github.com/Minori-Akizuki/ddnty#readme",
-  "repository": "https://github.com/Minori-Akizuki/ddnty",
+  "website": "https://github.com/Minori-Akizuki/ddntj#readme",
+  "repository": "https://github.com/Minori-Akizuki/ddntj",
   "success_url": "/",
   "env": {
     "NODE_ENV": "production"

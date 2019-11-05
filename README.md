@@ -1,4 +1,4 @@
-# ddnty
+# ddntj
 Playing online TRPG with HTML5
 
 # usage

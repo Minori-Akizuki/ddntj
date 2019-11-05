@@ -25,7 +25,7 @@ var server = require('http').createServer(
     var output;
     systemLogger.info(`request to ${requestpath}`);
 
-    if(requestpath==='/room'){
+    if(requestpath==='/'){
       // トップページ
       res.writeHead(200, {'Content-Type':'text/html'});
       output = fs.readFileSync(publicPath + '/index.html', 'utf-8');
