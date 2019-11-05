@@ -1,21 +1,30 @@
 <template>
   <div>
-    <enter v-if="!this.enterd" v-on:enterRoom="enterRoom"></enter>
-		<rpgmap v-if="this.enterd"
-      :roomNo="roomNo">
-		</rpgmap >
-    <chatbox v-if="this.enterd"
-      :yourname="yourname"
-      :roomNo="roomNo"
-      :socketio.sync="socketio"
-      :systems="systems"
-    ></chatbox>
+    <div>
+      <menubar></menubar>
+    </div>
+    <div>
+      <enter v-if="!this.enterd" v-on:enterRoom="enterRoom"></enter>
+    </div>
+    <div>
+      <rpgmap v-if="this.enterd"
+        :roomNo="roomNo">
+      </rpgmap >
+      <chatbox v-if="this.enterd"
+        :yourname="yourname"
+        :roomNo="roomNo"
+        :socketio.sync="socketio"
+        :systems="systems"
+      ></chatbox>
+    </div>
   </div>
 </template>
 <script>
+import menubar from './components/menubar/menubar'
 import chatbox from './components/chatbox/chatbox';
 import rpgmap from './components/map/map';
 import enter from './components/enter/enter'
+
 import dicebot from '../js/dicebot';
 import io from 'socket.io-client';
 import Vue from 'vue';
@@ -34,6 +43,7 @@ export default {
     }
   },
   components: {
+    menubar,
     chatbox,
     rpgmap,
     enter
