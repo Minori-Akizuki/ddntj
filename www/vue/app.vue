@@ -56,12 +56,24 @@ export default {
       this.password = password;
       this.socketio.emit('connected', {'name' : yourname, 'room' : roomNo });
       this.enterd = true;
+    },
+    getParam: function (name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
   },
   created: function() {
-    dicebot.getsystems((systems) => {
-      this.systems = systems;
-    });
+    var room = this.getParam('room');
+    var pass = this.getParam('pass');
+    var name = this.getParam('name');
+    if(room){
+      this.enterRoom(room,pass,name);
+    }
   }
 }
 </script>
