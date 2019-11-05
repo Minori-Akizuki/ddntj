@@ -21,7 +21,6 @@ import io from 'socket.io-client';
 import Vue from 'vue';
 
 const serverUrl = location.href;
-// const socket = io();
 
 export default {
   data() {
@@ -45,8 +44,7 @@ export default {
       this.yourname = yourname;
       this.roomNo = roomNo;
       this.password = password;
-      // this.socketio = 
-      this.socketio.emit('connected', yourname);
+      this.socketio.emit('connected', {'name' : yourname, 'room' : roomNo });
       this.enterd = true;
     }
   },

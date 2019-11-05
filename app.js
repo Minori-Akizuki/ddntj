@@ -65,14 +65,16 @@ systemLogger.debug(io);
 // 2.イベントの定義
 io.sockets.on('connection', function (socket) {
 
-  var roomNo = 0;
+  var roomNo = '';
   var username = '';
 
   // 接続開始カスタムイベント(接続元ユーザを保存し、他ユーザへ通知)
-  socket.on('connected', function (name) {
-    systemLogger.info(`connect : ${name}`);
-    var msg = name + 'が入室しました';
-    io.sockets.emit('publish', {'text': msg});
+  socket.on('connected', function (data) {
+    systemLogger.info(`connect : ${data.name} to ${data.room}`);
+    roomNo = data.room;
+    var msg = data.name + 'が入室しました';
+    socket.join(roomNo);
+    io.to(roomNo).emit('publish', {'text': msg});
   });
 
   // メッセージ送信カスタムイベント
@@ -80,6 +82,7 @@ io.sockets.on('connection', function (socket) {
     var msg;
     systemLogger.info(`${data.name} : ${data.system} : ${data.text}`);
     /*
+    // ダイスボット機能はいったんお休み……
     dicebot.roll(
       function(res){
         systemLogger.debug(res);
@@ -98,7 +101,7 @@ io.sockets.on('connection', function (socket) {
     //*/
     systemLogger.debug(data);
     msg = `${data.name} : ${data.text}`;
-    io.sockets.emit('publish', {'text': msg});
+    io.to(roomNo).emit('publish', {'text': msg});
   });
 
   // 接続終了組み込みイベント(接続元ユーザを削除し、他ユーザへ通知)
@@ -110,6 +113,6 @@ io.sockets.on('connection', function (socket) {
   // チットのアップデートイベント
   socket.on('publish.requestChitUpdated',function(chit){
     systemLogger(`chit update ${chit}`);
-    io.sockets.emit('publish.chitUpdated',chit);
+    io.to(roomNo).emit('publish.chitUpdated',chit);
   });
 });
