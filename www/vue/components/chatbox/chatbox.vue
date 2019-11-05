@@ -33,34 +33,39 @@
   </div>
 </template>
 <script>
-import io from 'socket.io-client';
 import Vue from 'vue';
 
 const serverUrl = location.href;
-const socketio = io.connect(serverUrl);
 
 export default {
   data() {
     return {
       messages: [],
       totalMessageId: 0 ,
-      inputbox: "",
-      selectedSystem: this.selected,
+      inputbox: '',
+      selectedSystem: 'DiceBot',
       name: this.yourname,
-      update: true
+      update: true,
     }
   },
   props: [
-    'systems',
     'yourname',
-    'selected'
+    'selected',
+    'socketio',
+    'systems',
+    'roomNo'
   ],
   created: function() {
-    socketio.on("publish", (data) => {
+    var _addMessage = this.addMessage;
+    this.socketio.on('connected', function(data){
       console.log(data);
-      this.addMessage(data.text);
+      _addMessage(data.text);
     });
-    this.addMessage("貴方は" + this.yourname + "として入室しました");
+    this.socketio.on('publish',function(data){
+      console.log('receve publsh : ' + data);
+      _addMessage(data.text);
+    });
+    this.addMessage("貴方は" + this.roomNo + "番の部屋に入室しました");
     return;
   },
   methods:{
@@ -90,7 +95,7 @@ export default {
 
       if(textInput === ''){ return; }
       const _msg = "[" + name + "] " + textInput;
-      socketio.emit(
+      this.socketio.emit(
         "publish",
         {
           'system': system,
