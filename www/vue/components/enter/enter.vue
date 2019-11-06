@@ -2,8 +2,8 @@
 <div class="draggable" id="enterform">
     <div>input to enter room No.</div>
     <div>
-    <input type="text"
-        v-model="roomNo"
+    <input type="number"
+        v-model.number="roomNo"
         placeholder="roomNo"
         class="input"
     />
@@ -49,6 +49,12 @@ export default {
       }
   },
   watch: {
+      roomNo : function(val){
+          console.log(val);
+          if( isNaN(val) || val<0) {
+              this.roomNo=0;
+          }
+      }
   },
   mounted : function(){
     $('.draggable').draggable();
@@ -66,7 +72,7 @@ export default {
     position: absolute;
     width: 250px;
     height: fit-content;
-    left: 50%;
-    top: 50%;
+    left: 50px;
+    top: 50px;
 }
 </style>
