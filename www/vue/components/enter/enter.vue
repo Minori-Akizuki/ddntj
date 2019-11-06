@@ -22,6 +22,7 @@
         class="input"
     />
     </div>
+    <div v-if="alert">部屋番号と名前を入れてください</div>
     <div id="enter">
     <button @click="enterRoom">enter
     </button>
@@ -35,7 +36,8 @@ export default {
     return {
         roomNo : "0",
         password : "",
-        yourname : ""
+        yourname : "",
+        alert : false
     }
   },
   props: [
@@ -45,6 +47,10 @@ export default {
   },
   methods:{
       enterRoom: function(){
+          if(this.roomNo == '' || this.yourname == ''){
+              this.alert = true;
+              return
+          }
           this.$emit("enterRoom", this.roomNo, this.password, this.yourname);
       }
   },
