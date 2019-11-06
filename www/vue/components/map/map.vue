@@ -79,6 +79,9 @@ export default{
 				chit
 		  );
 	  }
+  },
+  mounted : function(){
+    $('.draggable').draggable();
   }
 }
 </script>

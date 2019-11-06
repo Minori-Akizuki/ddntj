@@ -125,6 +125,9 @@ export default {
         this.$emit('update:yourname', newVal);
       }
     }
+  },
+  mounted : function(){
+    $('.draggable').draggable();
   }
 }
 </script>

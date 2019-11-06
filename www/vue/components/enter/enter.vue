@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="draggable" id="enterform">
     <div>input to enter room No.</div>
     <div>
     <input type="text"
@@ -49,8 +49,24 @@ export default {
       }
   },
   watch: {
+  },
+  mounted : function(){
+    $('.draggable').draggable();
   }
 }
 </script>
 <style>
+#enterform{
+    border: solid #808080;
+    bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    left: 10px;
+    padding: 0.5em;
+    position: absolute;
+    width: 250px;
+    height: fit-content;
+    left: 50%;
+    top: 50%;
+}
 </style>
