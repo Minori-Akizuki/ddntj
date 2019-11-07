@@ -68,6 +68,12 @@ export default {
     }
   },
   created: function() {
+    var _this = this
+    dicebot.getsystems(
+      function(systems){
+        _this.systems = systems;
+      }
+    );
     var room = this.getParam('room');
     var pass = this.getParam('pass');
     var name = this.getParam('name');

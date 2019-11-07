@@ -4,8 +4,7 @@ Log4js.configure('js/config/log-config.json');
 var systemLogger = Log4js.getLogger();
 
 var https = require('https');
-const BOTURL = 'https://www2.taruki.com/bcdice-api/v1/'
-// http://www2.taruki.com/bcdice-api/v1/diceroll?system=Cthulhu&command=2d10>10
+const BOTURL = 'https://bcdice.aimsot.net/v1/'
 
 exports.dicebot = function(){
 
@@ -15,27 +14,36 @@ exports.dicebot = function(){
       var _command = encodeURIComponent(command);
       var reqUrl = `${BOTURL}diceroll?system=${system}&command=${_command}`;
       systemLogger.debug(`requrl : ${reqUrl}`);
+      const options ={
+        'headers' : {
+          // todo: ヘッダで強制的にjson返すようにしたい
+        }
+      }
       https.get(
         reqUrl,
+        options,
         (res)=>{
           var body='';
+          if(res.headers['content-type']=='text/html'){
+            callback({'ok': false});
+            return;
+          }
           res.setEncoding('utf8');
           res.on('data', (chunk) => {
             body += chunk;
           });
           res.on('end', (res) => {
             _res = JSON.parse(body);
-            systemLogger.debug(_res);
             callback(_res);
           });
+          
         }
       );
-
     },
 
     systeminfo : function(callback, system){
       $.getJSON(
-        'https://www2.taruki.com/bcdice-api/v1/systeminfo?callback=?',
+        BOTURL + '/systeminfo?callback=?',
         {
           'system': system
         }

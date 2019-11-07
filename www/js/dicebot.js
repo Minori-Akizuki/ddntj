@@ -2,15 +2,18 @@
 var dicebot = dicebot || {};
 
 dicebot.systems = [];
+dicebot.url = 'https://bcdice.aimsot.net';
+dicebot.url_roll = dicebot.url + '/v1/diceroll';
 
 dicebot.getsystems = function(callback){
   if(!dicebot.systems.length){
     $.getJSON(
-      'https://www2.taruki.com/bcdice-api/v1/systems?callback=?'
+      dicebot.url + '/v1/names'
     ).done(
       function(data){
-        dicebot.systems = data.systems;
-        callback(data.systems);
+        console.log(data);
+        dicebot.systems = data.names;
+        callback(dicebot.systems);
       }
     );
   }

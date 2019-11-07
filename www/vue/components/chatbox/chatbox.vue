@@ -12,7 +12,7 @@
       <!-- システム選択 -->
       <select v-model="selectedSystem" name="systems" size="1">
         <option selected></option>
-        <option v-for="system in systems" :key="system">{{system}}</option>
+        <option v-for="system in systems" :key="system.system">{{system.name}}</option>
       </select>
     </div>
     <div class="input-area">

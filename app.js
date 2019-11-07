@@ -59,9 +59,7 @@ var server = require('http').createServer(
 );
 
 // socket.io イベント定義 (分割できないかな……)
-// var io = require('socket.io').listen(server);
 var io = require('socket.io')(server)
-systemLogger.debug(io);
 // 2.イベントの定義
 io.sockets.on('connection', function (socket) {
 
@@ -81,27 +79,21 @@ io.sockets.on('connection', function (socket) {
   socket.on('publish', function (data) {
     var msg;
     systemLogger.info(`${data.name} : ${data.system} : ${data.text}`);
-    /*
-    // ダイスボット機能はいったんお休み……
     dicebot.roll(
       function(res){
         systemLogger.debug(res);
         if(res.ok){
-          msg=res.result;
+          msg = ' ' + res.result;
         } else {
-          msg=data.text;
+          msg = ' : ' + data.text;
         }
         systemLogger.debug(msg);
-        msg = `${data.name} : ${msg}`;
-        io.sockets.emit('publish', {'text': msg});
+        msg = `${data.name}${msg}`;
+        io.to(roomNo).emit('publish', {'text': msg});
       },
       data.system,
       data.text
     );
-    //*/
-    systemLogger.debug(data);
-    msg = `${data.name} : ${data.text}`;
-    io.to(roomNo).emit('publish', {'text': msg});
   });
 
   // 接続終了組み込みイベント(接続元ユーザを削除し、他ユーザへ通知)
