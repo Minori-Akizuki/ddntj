@@ -4,6 +4,8 @@ Playing online TRPG with HTML5
 
 ## usage
 
+適当な場所にcouchDBを用意して、 `js/constants.js` をいじってください。
+
 node.js の環境を用意してから、落としたディレクトリで以下を実行すると8080番ポートでサーバが立ち上がります。
 
 ```bash

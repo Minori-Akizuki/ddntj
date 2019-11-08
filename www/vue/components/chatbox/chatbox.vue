@@ -57,6 +57,12 @@ export default {
   ],
   created: function() {
     var _addMessage = this.addMessage;
+    this.socketio.on('chatinit', function(data){
+      console.log(data);
+      data.chats.forEach(text => {
+        _addMessage(text);
+      });
+    });
     this.socketio.on('connected', function(data){
       console.log(data);
       _addMessage(data.text);

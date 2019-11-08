@@ -2,6 +2,7 @@
 var Log4js = require('log4js');
 var $ = require('jquery');
 var url = require('url');
+var cradle = require('cradle');
 
 // log4js設定
 Log4js.configure('./js/config/log-config.json');
@@ -15,7 +16,72 @@ var dicebot = require('./js/dicebot.js').dicebot();
 // パブリックパス
 const publicPath = './dist'
 
-// サーバの初期化
+// DB関連
+// セットアップ
+var conn = new(cradle.Connection)(
+  constants.DB_URL,
+  constants.DB_PORT
+);
+
+var db_master = conn.database('ddntj');
+var rooms = [];
+
+/**
+ * make master db if not exists
+ */
+db_master.exists(function (err, exists) {
+  if (err) {
+    systemLogger.info('DB error', err);
+  } else if (exists) {
+    systemLogger.info('found DB ddntj.');
+  } else {
+    systemLogger.info('database ddntj does not exists.');
+    systemLogger.info('ddntj will make database.');
+    db_master.create();
+  }
+});
+
+
+/**
+ * 部屋初期化のための関数
+ * @callback initRoomCallback
+ * @param {*} err
+ * @param {bool} created 
+ * @param {Database} database 
+ */
+/**
+ * 部屋の存在を確認しコールバックを呼ぶ
+ * @param {initRoomCallback} callback 
+ * @param {Number} roomNo roomNo
+ */
+var roomDB = function(callback,roomNo){
+  if( isNaN(roomNo) || roomNo > constants.ROOM_TOTAL){
+    systemLogger.info('requested over total Numver or NaN');
+    callback('requested over total Numver or NaN', false, null);
+    return;
+  } else {
+    var roomDbName = 'ddntj_room_' + roomNo;
+    systemLogger.debug('find ' + roomDbName)
+    var dbRoom = conn.database(roomDbName);
+    dbRoom.exists(function (err, exists) {
+      if (err) {
+        systemLogger.info('DB error', err);
+        callback('DB error', false, null);
+      } else if (exists) {
+        systemLogger.info('found DB room : ' + roomNo);
+        callback(false, false, dbRoom);
+      } else {
+        systemLogger.info(`room ${roomNo} does not exists.`);
+        systemLogger.info('ddntj will make database.');
+        dbRoom.create();
+        // createに時間かかるから少しだけ待つ
+        setTimeout(()=>callback(false, true, dbRoom),1000);
+      }
+    })
+  }
+}
+
+// サーバ関連
 var fs = require('fs');
 var server = require('http').createServer(
   function(req, res) {
@@ -70,9 +136,55 @@ io.sockets.on('connection', function (socket) {
   socket.on('connected', function (data) {
     systemLogger.info(`connect : ${data.name} to ${data.room}`);
     roomNo = data.room;
-    var msg = data.name + 'が入室しました';
-    socket.join(roomNo);
-    io.to(roomNo).emit('publish.chat', {'text': msg});
+    var msg = ''
+    // 部屋のDBを用意
+    roomDB(
+      function (err, created, db){
+        systemLogger.debug(db);
+        if(err){
+          systemLogger.error('DB error.');
+          msg = 'エラーです';
+          return;
+          // todo: ここで選択画面に戻したい
+        }else if(created){
+          systemLogger.info('created room DB : ' + roomNo);
+          msg = data.name + 'が入室しました';
+          // 部屋初期化処理
+          systemLogger.debug('/-- init room DB --/');
+          db.save(
+            'chatlog',
+            {
+              log : []
+            },
+            function(err, res){
+              systemLogger.debug('/-init log-/')
+              systemLogger.debug(err);
+              systemLogger.debug(res);
+            }
+          );
+        }else{
+          systemLogger.info('found room DB : ' + roomNo);
+          msg = data.name + 'が入室しました';
+          // チャット等等よみこみ処理
+          db.get(
+            'chatlog',
+            function(err, doc){
+              io.to(socket.id).emit('chatinit', {chats:doc.log});
+            }
+          )
+        }
+        if(!err){
+          rooms[roomNo] = rooms[roomNo] || {};
+          rooms[roomNo].db = db;
+          systemLogger.debug('find/create room db');
+        }
+        systemLogger.debug(msg);
+        socket.join(roomNo);
+        io.to(roomNo).emit('publish.chat', {'text': msg});
+      },
+      roomNo
+    );
+
   });
 
   // メッセージ送信カスタムイベント
@@ -90,6 +202,12 @@ io.sockets.on('connection', function (socket) {
         systemLogger.debug(msg);
         msg = `${data.name}${msg}`;
         io.to(roomNo).emit('publish.chat', {'text': msg});
+        rooms[roomNo].db.get('chatlog',function(err, doc){
+          systemLogger.debug(doc);
+          var _log = doc.log;
+          _log.push(msg);
+          rooms[roomNo].db.save('chatlog', { log:_log});
+        });
       },
       data.system,
       data.text
