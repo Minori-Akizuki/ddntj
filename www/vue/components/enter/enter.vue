@@ -2,30 +2,25 @@
 <div class="draggable" id="enterform">
     <div>input to enter room No.</div>
     <div>
-    <input type="number"
-        v-model.number="roomNo"
-        placeholder="roomNo"
-        class="input"
-    />
-    </div>
-    <div>
-    <input type="text"
-        v-model="password"
-        placeholder="password"
-        class="input"
-    />
-    </div>
-    <div>
-    <input type="text"
-        v-model="yourname"
-        placeholder="name"
-        class="input"
-    />
-    </div>
-    <div v-if="alert">部屋番号と名前を入れてください</div>
-    <div id="enter">
-    <button @click="enterRoom">enter
-    </button>
+        <b-form @submit="enterRoom">
+            <b-form-input
+                id="room-no"
+                v-model.number="roomNo"
+                type="number"
+                required
+                min="0"
+            ></b-form-input>
+            <b-form-input
+                id="password"
+                v-model="password"
+            ></b-form-input>
+            <b-form-input
+                id="yourname"
+                v-model="yourname"
+                required
+            ></b-form-input>
+            <b-button type="submit" variant="primary">Enter Room</b-button>
+        </b-form>
     </div>
 </div>
 </template>
@@ -47,10 +42,6 @@ export default {
   },
   methods:{
       enterRoom: function(){
-          if(this.roomNo == '' || this.yourname == ''){
-              this.alert = true;
-              return
-          }
           this.$emit("enterRoom", this.roomNo, this.password, this.yourname);
       }
   },
