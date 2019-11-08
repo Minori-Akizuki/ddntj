@@ -61,7 +61,7 @@ export default {
       console.log(data);
       _addMessage(data.text);
     });
-    this.socketio.on('publish',function(data){
+    this.socketio.on('publish.chat',function(data){
       console.log('receve publsh : ' + data);
       _addMessage(data.text);
     });
@@ -96,7 +96,7 @@ export default {
       if(textInput === ''){ return; }
       const _msg = "[" + name + "] " + textInput;
       this.socketio.emit(
-        "publish",
+        "publish.chat",
         {
           'system': system,
           'text': textInput,
@@ -138,7 +138,7 @@ export default {
   bottom: 5px;
   display: flex;
   flex-direction: column;
-  height: 150px;
+  height: 200px;
   left: 10px;
   padding: 0.5em;
   position: absolute;

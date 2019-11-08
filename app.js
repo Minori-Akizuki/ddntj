@@ -72,11 +72,11 @@ io.sockets.on('connection', function (socket) {
     roomNo = data.room;
     var msg = data.name + 'が入室しました';
     socket.join(roomNo);
-    io.to(roomNo).emit('publish', {'text': msg});
+    io.to(roomNo).emit('publish.chat', {'text': msg});
   });
 
   // メッセージ送信カスタムイベント
-  socket.on('publish', function (data) {
+  socket.on('publish.chat', function (data) {
     var msg;
     systemLogger.info(`${data.name} : ${data.system} : ${data.text}`);
     dicebot.roll(
@@ -89,7 +89,7 @@ io.sockets.on('connection', function (socket) {
         }
         systemLogger.debug(msg);
         msg = `${data.name}${msg}`;
-        io.to(roomNo).emit('publish', {'text': msg});
+        io.to(roomNo).emit('publish.chat', {'text': msg});
       },
       data.system,
       data.text
