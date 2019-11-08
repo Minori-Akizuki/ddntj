@@ -128,6 +128,7 @@ export default {
   },
   mounted : function(){
     $('.draggable').draggable();
+    $(".resizable").resizable();
   }
 }
 </script>
