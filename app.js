@@ -26,9 +26,7 @@ var conn = new(cradle.Connection)(
 var db_master = conn.database('ddntj');
 var rooms = [];
 
-/**
- * make master db if not exists
- */
+// make master db if not exists
 db_master.exists(function (err, exists) {
   if (err) {
     systemLogger.info('DB error', err);
@@ -41,6 +39,11 @@ db_master.exists(function (err, exists) {
   }
 });
 
+// setup room
+for(roomNo = 0; roomNo <= constants.ROOM_TOTAL; roomNo++){
+  roomDbName = 'ddntj_room_'+roomNo;
+  rooms[roomNo] = {db:conn.database(roomDbName)};
+}
 
 /**
  * 部屋初期化のための関数
@@ -62,7 +65,7 @@ var roomDB = function(callback,roomNo){
   } else {
     var roomDbName = 'ddntj_room_' + roomNo;
     systemLogger.debug('find ' + roomDbName)
-    var dbRoom = conn.database(roomDbName);
+    var dbRoom = rooms[roomNo].db;
     dbRoom.exists(function (err, exists) {
       if (err) {
         systemLogger.info('DB error', err);
@@ -174,8 +177,6 @@ io.sockets.on('connection', function (socket) {
           )
         }
         if(!err){
-          rooms[roomNo] = rooms[roomNo] || {};
-          rooms[roomNo].db = db;
           systemLogger.debug('find/create room db');
         }
         systemLogger.debug(msg);
