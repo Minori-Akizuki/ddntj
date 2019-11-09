@@ -130,6 +130,7 @@ export default{
 div[id^=chit]{
 	height: 50px;
 	width: 50px;
+	transition: all 0.2s ease-in-out;
 }
 
 </style>
