@@ -12,6 +12,7 @@ systemLogger.level='debug';
 // 自作ライブラリ群
 var constants = require('./js/constants.js').constants();
 var dicebot = require('./js/dicebot.js').dicebot();
+var apis = require('./js/apis.js');
 
 // パブリックパス
 const publicPath = './dist'
@@ -25,6 +26,8 @@ var conn = new(cradle.Connection)(
 
 var db_master = conn.database('ddntj');
 var rooms = [];
+
+var apis = require('./js/apis').apis(db_master,rooms);
 
 // make master db if not exists
 db_master.exists(function (err, exists) {
@@ -100,6 +103,12 @@ var server = require('http').createServer(
       output = fs.readFileSync(publicPath + '/index.html', 'utf-8');
       systemLogger.debug('return top page');
       res.end(output);
+      return;
+    }
+    // api群
+    if(requestpath.indexOf('/api/')==0){
+      systemLogger.debug('request api');
+      apis.api(req,res);
       return;
     }
     // 各種リソース
