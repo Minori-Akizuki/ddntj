@@ -12,7 +12,6 @@ systemLogger.level='debug';
 // 自作ライブラリ群
 var constants = require('./js/constants.js').constants();
 var dicebot = require('./js/dicebot.js').dicebot();
-var apis = require('./js/apis.js');
 
 // パブリックパス
 const publicPath = './dist'
