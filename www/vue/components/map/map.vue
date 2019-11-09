@@ -3,10 +3,10 @@
   <div id="map" class="draggable ui-widget-content">
     <!-- チット -->
 		<div 
-			 id="chit"
-		   v-for="chit in chits"
-			 v-bind:key="chit.id"
-			 class="draggable ui-widget-content"
+			v-bind:id="'chit_'+chit.id"
+			v-for="chit in chits"
+			v-bind:key="chit.id"
+			class="draggable-chit ui-widget-content"
 		>{{chit.id}}{{chit.name}}</div>
   </div>
 </template>
@@ -16,12 +16,11 @@ import io from 'socket.io-client';
 import Vue from 'vue'
 
 const serverUrl = location.href;
-const socketio = io.connect(serverUrl);
 
 class Vector2d{
 	constructor(x,y){
-		this.x = x ? 0 : x;
-		this.y = y ? 0 : y;
+		this.x = x ? x : 0;
+		this.y = y ? y : 0;
 	}
 }
 
@@ -36,22 +35,29 @@ class Chit {
 		this.id = id;
 		this.name = name;
 		this.position = position;
+		this.toString = function (){
+			return `chit : ${id},${name},${position.x},${position.y}`
+		};
 
-		console.log(`create chit ${this.toString()}`)
+		console.log(`create chit ${id},${name},${position}`)
 	}
 }
 
 export default{
   data(){
-		return{
-      mapfile: '',
-		  chits: []
-		}
+	return{
+    	mapfile: '',
+		chits: []
+	}
   },
+  props:[
+	  'socketio'
+  ],
   created: function(){
-		socketio.on('publish.chitUpdated', function(chit){
-			console.log(`updated chit from pther player ${chit}`);
-			this.updateChitStatus(chit);
+	  var _this = this;
+		this.socketio.on('publish.requestChitUpdated', function(chit){
+			console.log(`updated chit from other player ${chit}`);
+			_this.updateChitStatus(chit);
 		});
 		// debug v
 			 this.updateChitStatus(
@@ -60,28 +66,57 @@ export default{
 		// debug ^
   },
   methods:{
-		/*
-		 * update chit status in collection
-		 * @param {Chit} chit - chit
-		 */
-		updateChitStatus: function(chit){
-			console.log(`update chit ${chit}`)
-			this.chits[chit.id]=chit;
-			return;
-		},
-		/*
-		 * send chit data to server
-		 * @param {Chit} chit - chit 
-		 */
-		sendChitStatus: function(chit){
-			socketio.emit(
-				"publish.requestChitUpdate",
-				chit
-		  );
-	  }
+	/*
+		* update chit status in collection
+		* @param {Chit} chit - chit
+		*/
+	updateChitStatus: function(chit){
+		console.log(`update chit ${chit}`)
+		this.chits[chit.id]=chit;
+		$('#chit_'+chit.id).css({
+			top: chit.position.y,
+			left: chit.position.x
+		})
+		return;
+	},
+	/**
+	 * convert ui to chit
+	 */
+	convertUitoChit : function(ui){
+		var _helper = ui.helper;
+		console.log(_helper[0].id, ui.position.left, ui.position.top);
+		var id  = _helper[0].id.slice(5);
+		var chit = new Chit(
+			id,
+			this.chits[id].name,
+			new Vector2d(ui.position.left,ui.position.top)
+		);
+		console.log('conv chit to : ' +  chit.toString());
+		return chit;
+	},
+	/**
+	 * re-attach draggable
+	 */
+	reAttachDraggable : function(snap){
+		var _this = this
+		$('.draggable').draggable();
+		var option = snap ? { grid:[50,50] } : {}
+		$('.draggable-chit')
+			.draggable(option)
+			.on(
+				'dragstop',
+				function(event,ui){
+					console.log('dragged chit')
+					console.log(ui);
+					var chit =_this.convertUitoChit(ui);
+					_this.updateChitStatus(chit)
+					_this.socketio.emit('publish.requestChitUpdated',chit);
+			});
+
+	}
   },
   mounted : function(){
-    $('.draggable').draggable();
+	  this.reAttachDraggable(true);
   }
 }
 </script>
@@ -92,7 +127,7 @@ export default{
 	width: 500px;
 }
 
-#chit{
+div[id^=chit]{
 	height: 50px;
 	width: 50px;
 }

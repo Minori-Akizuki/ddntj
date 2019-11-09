@@ -231,7 +231,7 @@ io.sockets.on('connection', function (socket) {
 
   // チットのアップデートイベント
   socket.on('publish.requestChitUpdated',function(chit){
-    systemLogger(`chit update ${chit}`);
-    io.to(roomNo).emit('publish.chitUpdated',chit);
+    systemLogger.info(`chit update ${chit.id}`);
+    io.to(roomNo).emit('publish.requestChitUpdated',chit);
   });
 });

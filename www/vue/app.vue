@@ -8,7 +8,8 @@
     </div>
     <div>
       <rpgmap v-if="this.enterd"
-        :roomNo="roomNo">
+        :roomNo="roomNo"
+        :socketio.sync="socketio">
       </rpgmap >
       <chatbox v-if="this.enterd"
         :yourname="yourname"
