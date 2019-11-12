@@ -1,4 +1,9 @@
 <template>
+<div>
+	<characters
+		v-model="chits"
+	>
+	</characters>
   <!-- マップ -->
   <div id="map" class="draggable ui-widget-content">
     <!-- チット -->
@@ -9,13 +14,13 @@
 			class="draggable-chit ui-widget-content"
 		>{{chit.id}}{{chit.name}}</div>
   </div>
+</div>
 </template>
 
 <script>
 import io from 'socket.io-client';
 import Vue from 'vue'
-
-const serverUrl = location.href;
+import characters from './characters'
 
 class Vector2d{
 	constructor(x,y){
@@ -31,15 +36,18 @@ class Chit {
 	 * @param {number} name - chit name
 	 * @param {Vector2d} position - position
 	 */
-	constructor(id,name,position){
+	constructor(id, name, position,character, initiative, status){
 		this.id = id;
 		this.name = name;
 		this.position = position;
+		this.initiative = initiative || 0
+		this.status = status || [];
+		this.character = character || false;
+		this.memo = '';
 		this.toString = function (){
 			return `chit : ${id},${name},${position.x},${position.y}`
 		};
-
-		console.log(`create chit ${id},${name},${position}`)
+		console.log(`create chit ` + this.toString());
 	}
 }
 
@@ -53,6 +61,9 @@ export default{
   props:[
 	  'socketio'
   ],
+  components:{
+	  characters
+  },
   created: function(){
 	  var _this = this;
 		this.socketio.on('publish.requestChitUpdated', function(chit){
@@ -61,8 +72,22 @@ export default{
 		});
 		// debug v
 			 this.updateChitStatus(
-				 new Chit(0, 'test', new Vector2d(0,0))
+				 new Chit(
+					0, 
+					'test', 
+					new Vector2d(0,0),
+					true,
+					0,
+					[
+						{name:'HP', value:10},
+						{name:'MP', value:5},
+						{name:'poizn', value:true}
+					]
+				)
 			 );
+			this.updateChitStatus(
+				new Chit(1, 'test1', new Vector2d(50,50))
+			);
 		// debug ^
   },
   methods:{
@@ -72,7 +97,12 @@ export default{
 		*/
 	updateChitStatus: function(chit){
 		console.log(`update chit ${chit}`)
-		this.chits[chit.id]=chit;
+		var chitIndex = this.chits.findIndex((_chit)=>{return _chit.id==chit.id;});
+		if(chitIndex >= 0){
+			this.chits[chitIndex]=chit;
+		} else {
+			this.chits.push(chit);
+		}
 		$('#chit_'+chit.id).css({
 			top: chit.position.y,
 			left: chit.position.x
@@ -86,12 +116,13 @@ export default{
 		var _helper = ui.helper;
 		console.log(_helper[0].id, ui.position.left, ui.position.top);
 		var id  = _helper[0].id.slice(5);
+		console.log(`taeget is <${this.chits.find((_chit)=>{return _chit.id==id;})}>`)
 		var chit = new Chit(
 			id,
-			this.chits[id].name,
+			this.chits.find((_chit)=>{return _chit.id==id;}).name,
 			new Vector2d(ui.position.left,ui.position.top)
 		);
-		console.log('conv chit to : ' +  chit.toString());
+		console.log('conv chit [' + this.chits.findIndex((_chit)=>{return _chit.id==id;}) + '] to : ' +  chit.toString());
 		return chit;
 	},
 	/**
@@ -125,6 +156,7 @@ export default{
 #map{
 	height: 500px;
 	width: 500px;
+	z-index: 1;
 }
 
 div[id^=chit]{
