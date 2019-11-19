@@ -12,7 +12,7 @@
       <!-- システム選択 -->
       <select v-model="selectedSystem" name="systems" size="1">
         <option selected></option>
-        <option v-for="system in systems" :key="system.system">{{system.name}}</option>
+        <option v-for="system in systems" :key="system.system" :value="system.system">{{system.name}}</option>
       </select>
     </div>
     <div class="input-area">
@@ -119,13 +119,9 @@ export default {
         this.update = false;
       }
     }
+
   },
   watch: {
-    selectedSystem: function(newVal, oldVal) {
-      if (newVal !== oldVal) {
-        this.$emit('update:selected', newVal);
-      }
-    },
     name: function(newVal, oldVal) {
       if (newVal !== oldVal) {
         this.$emit('update:yourname', newVal);
