@@ -5,7 +5,7 @@
             <tr>
                 <th>In</th>
                 <th>名前</th>
-                <th v-for="stat in value[0].status" :key=stat.name id="stat">
+                <th v-for="stat in statusName" :key=stat.name id="stat">
                     {{stat.name}}
                 </th>
                 <th>メモ</th>
@@ -18,7 +18,7 @@
                     v-for="stat in chit.status" 
                     :key=stat.name
                     >
-                    <b-checkbox v-if="stat.value==true || stat.value==false" v-model="stat.value"></b-checkbox>
+                    <b-checkbox v-if="stat.type=='bool'" v-model="stat.value"></b-checkbox>
                     <b-input
                         v-else
                         id="type-number stat input-small"
@@ -35,8 +35,65 @@
         </table>
     </div>
     <div id="editcharcter">
-        <b-button size=sm>キャラ追加</b-button>
-        <b-button size=sm>プロパティ編集</b-button>
+        <b-button 
+            v-b-modal.addCharcterModal
+            size=sm
+        >チット追加</b-button>
+        <b-modal 
+            id="addCharcterModal" 
+            title="チット追加"
+            @ok="addNewChit"
+            size="lg"
+        >
+            <table>
+            <tr>
+                <th>In</th>
+                <th>名前</th>
+                <th>キャラ</th>
+                <th v-for="stat in statusName" :key=stat.name id="stat">
+                    {{stat.name}}
+                </th>
+                <th>メモ</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>
+                    <b-input 
+                        v-model.number="newChit.intiative"
+                        type="number"
+                        id="type-number stat input-small"
+                        size=sm></b-input>
+                    </td>
+                <td>
+                    <b-input
+                        v-model="newChit.name"
+                        size=sm
+                    ></b-input>
+                </td>
+                <td>
+                    <b-checkbox v-model="newChit.character"></b-checkbox>
+                </td>
+                <td
+                    v-for="stat in newChit.status" 
+                    :key=stat.name
+                    >
+                    <b-checkbox 
+                        v-if="stat.type=='bool'" 
+                        v-model="stat.value"
+                        :disabled="!newChit.character"></b-checkbox>
+                    <b-input
+                        v-else
+                        :disabled="!newChit.character"
+                        id="type-number stat input-small"
+                        v-model.number="stat.value" 
+                        type="number"
+                        size=sm></b-input>
+                </td>
+                <td><b-textarea v-model="newChit.memo" size="sm"></b-textarea></td>
+            </tr>                
+            </table>
+        </b-modal>
+        <b-button size=sm>ステータス項目編集</b-button>
     </div>
 </div>
 </template>
@@ -45,9 +102,22 @@
 import io from 'socket.io-client';
 import Vue from 'vue'
 
+class Vector2d{
+	constructor(x,y){
+		this.x = x ? x : 0;
+		this.y = y ? y : 0;
+	}
+}
+
 export default{
   data(){
 	return{
+        statusName:[
+            {name:'HP', type:'number', value:0},
+            {name:'MP', type:'number', value:0},
+            {name:'poizon', type:'bool', value:false},
+        ],
+        newChit : {}
 	}
   },
   props:[
@@ -57,14 +127,45 @@ export default{
 
   },
   methods:{
-
+      copyNewChit : function(_chit){
+        var chit =new Object;
+        chit.id = Date.now().toString(16);
+		chit.name = _chit.name;
+		chit.position = _chit.position || new Vector2d();
+		chit.character = _chit.character || true;
+		chit.initiative = _chit.initiative || 0
+        chit.status = _chit.status || 
+            this.statusName.map(
+                function(s){
+                    console.log(s); 
+                    return {
+                        name:s.name, type:s.type, value:s.value 
+                    };
+                }
+            );
+		chit.memo = _chit.memo || '';
+		chit.toString = function (){
+			return `chit : ${this.id},${this.name},${this.position.x},${this.position.y}`
+		};
+        console.log(`create chit ` + this.toString());
+        return chit;
+    },
+    addNewChit : function(){
+        console.log(this.newChit.toString());
+        this.value.push(this.copyNewChit(this.newChit));
+        this.reattachDraggable();
+    },
+    reattachDraggable : function(){
+        $('.draggable').draggable();
+    }
   },
   watch : {
       value : function(){
-          $emit('input',$event.target.value);
+          this.$emit('input',this.$event.target.value);
       }
   },
   mounted : function(){
+    this.newChit = this.copyNewChit({});
         $('.draggable').draggable();
         $('.resizable').resizable();
   }

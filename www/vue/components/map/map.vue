@@ -12,7 +12,7 @@
 			v-for="chit in chits"
 			v-bind:key="chit.id"
 			class="draggable-chit ui-widget-content"
-		>{{chit.id}}{{chit.name}}</div>
+		>{{chit.name}}</div>
   </div>
 </div>
 </template>
@@ -21,6 +21,7 @@
 import io from 'socket.io-client';
 import Vue from 'vue'
 import characters from './characters'
+
 
 class Vector2d{
 	constructor(x,y){
@@ -70,25 +71,6 @@ export default{
 			console.log(`updated chit from other player ${chit}`);
 			_this.updateChitStatus(chit);
 		});
-		// debug v
-			 this.updateChitStatus(
-				 new Chit(
-					0, 
-					'test', 
-					new Vector2d(0,0),
-					true,
-					0,
-					[
-						{name:'HP', value:10},
-						{name:'MP', value:5},
-						{name:'poizn', value:true}
-					]
-				)
-			 );
-			this.updateChitStatus(
-				new Chit(1, 'test1', new Vector2d(50,50))
-			);
-		// debug ^
   },
   methods:{
 	/*
