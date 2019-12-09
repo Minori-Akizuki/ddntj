@@ -234,4 +234,10 @@ io.sockets.on('connection', function (socket) {
     systemLogger.info(`chit update ${chit.id}`);
     io.to(roomNo).emit('publish.requestChitUpdated',chit);
   });
+
+  // チット削除要求
+  socket.on('publish.requestChitDelete',function(chit){
+    systemLogger.info(`chit delete ${chit.id}`);
+    io.to(roomNo).emit('publish.requestChitDelete',chit);
+  });
 });
