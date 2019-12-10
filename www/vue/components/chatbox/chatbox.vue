@@ -145,6 +145,7 @@ export default {
   padding: 0.5em;
   position: absolute;
   width: 800px;
+  z-index: 3;
 }
 
 #chatmessages{
