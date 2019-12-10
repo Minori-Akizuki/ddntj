@@ -1,7 +1,8 @@
 <template>
 <div>
 	<characters
-		v-bind:chits.sync="chits"
+		v-bind:chits_prop.sync="chits"
+		:socketio.sync="socketio"
 		@update:chit="updateChitStatusOwn"
 		@delete:chit="deleteChit"
 	>

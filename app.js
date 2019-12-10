@@ -240,4 +240,11 @@ io.sockets.on('connection', function (socket) {
     systemLogger.info(`chit delete ${chit.id}`);
     io.to(roomNo).emit('publish.requestChitDelete',chit);
   });
+
+  // ステータス項目変更要求
+  socket.on('publish.statusChanged', function(status){
+    systemLogger.info(`edit status ${status}`);
+    io.to(roomNo).emit('publish.statusChanged',status);
+  })
+
 });

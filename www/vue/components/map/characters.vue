@@ -155,7 +155,13 @@
             </tr>                
             </table>
         </b-modal>
-        <b-button size=sm>ステータス項目編集</b-button>
+    </div>
+    <div>
+        <b-button v-b-modal.editStat size=sm>ステータス項目編集</b-button>
+        <b-modal id="editStat" @ok="setStatusOwn">
+            半角句切りでパラメータを入力してください。「*」をつけた項目はチェックボックスになります。
+            <b-input v-model="statusStr"></b-input>
+        </b-modal>
     </div>
 </div>
 </template>
@@ -179,14 +185,21 @@ export default{
             {name:'MP', type:'number', value:0},
             {name:'poizon', type:'bool', value:false},
         ],
-        newChit : {}
+        statusStr: 'HP MP *poizon',
+        newChit : {},
+        chits : this.chits_prop
 	}
   },
   props:[
-	 'chits'
+     'chits_prop',
+     'socketio'
   ],
   created: function(){
-
+    var _this = this;
+	this.socketio.on('publish.statusChanged', function(status){
+		console.log(`status changed from other player ${status}`);
+		_this.setStatus(status);
+	});
   },
   methods:{
       copyNewChit : function(_chit){
@@ -218,13 +231,57 @@ export default{
         this.chits.splice(index,1);
         this.$emit('delete:chit',chit);
     },
-    reattachDraggable : function(){
-        $('.draggable-chit').draggable();
-    }
+    setStatusOwn : function(){
+        this.setStatus();
+        this.socketio.emit('publish.statusChanged',this.statusStr);
+    },
+    setStatusOther : function(status){
+        this.setStatus(status);
+    },
+    setStatus : function(status){
+        if(status){
+            this.statusStr = status;
+        }
+        console.log(`set status ${this.statusStr}`);
+        var statusArr = this.statusStr.split(' ');
+        // ステータス基本情報の生成
+        var newStatus = statusArr.map(
+            function(_name){
+                if(_name.charAt(0)=='*'){
+                    return {
+                        name : _name.slice(1),
+                        type : 'bool',
+                        value : false
+                    }
+                } else {
+                    return {
+                        name : _name,
+                        type : 'number',
+                        value : 0
+                    }
+                }
+            }
+        )
+        this.statusName = newStatus;
+        // 全てのチットに新しいステータスをセット
+        this.chits = this.chits.map(
+            function(c){
+                c.status = newStatus.map(
+                    function(s){
+                        return Object.assign({},s);
+                    }
+                )
+                return c;
+            }
+        )
+        // 雛形のセット
+        this.newChit = this.copyNewChit({});
+    },
   },
   watch : {
-      chits : function(){
-          this.$emit('chitupdate',this.chits);
+      chits_prop : function(old, chits){
+        console.log('chatch change chits from map in ch');
+        this.chits = chits;
       }
   },
   mounted : function(){
