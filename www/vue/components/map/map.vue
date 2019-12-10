@@ -100,7 +100,7 @@ export default{
 			this.$set(this.chits,chitIndex,chit);
 		} else {
 			this.chits.push(chit);
-			this.$nextTick( () => {_this.reAttachDraggable();} );
+
 		}
 		$('#chit_'+chit.id).css({
 			top: chit.position.y,
@@ -109,6 +109,7 @@ export default{
 		this.chits.sort(function(a,b){
 			return b.initiative - a.initiative;
 		})
+		this.$nextTick( () => {_this.reAttachDraggable();} );
 		return;
 	},
 	updateChitStatusOther:function(chit){
