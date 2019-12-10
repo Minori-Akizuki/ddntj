@@ -151,7 +151,6 @@ io.sockets.on('connection', function (socket) {
     // 部屋のDBを用意
     roomDB(
       function (err, created, db){
-        systemLogger.debug(db);
         if(err){
           systemLogger.error('DB error.');
           msg = 'エラーです';
@@ -161,18 +160,42 @@ io.sockets.on('connection', function (socket) {
           systemLogger.info('created room DB : ' + roomNo);
           msg = data.name + 'が入室しました';
           // 部屋初期化処理
-          systemLogger.debug('/-- init room DB --/');
+          systemLogger.info('/-- init room DB --/');
+          // チャット
           db.save(
             'chatlog',
             {
               log : []
             },
             function(err, res){
-              systemLogger.debug('/-init log-/')
+              systemLogger.info('/-init log-/')
               systemLogger.debug(err);
               systemLogger.debug(res);
             }
           );
+          // ステータス項目
+          db.save(
+            'status',
+            {
+              str : 'HP MP *毒'
+            },
+            function(err, res){
+              systemLogger.info('/-init status-/')
+              systemLogger.debug(err);
+              systemLogger.debug(res);
+            }
+          );
+          db.save(
+            'chits',
+            {
+              chits : []
+            },
+            function(err, res){
+              systemLogger.debug('/-init chits-/')
+              systemLogger.debug(err);
+              systemLogger.debug(res);
+            }
+          )
         }else{
           systemLogger.info('found room DB : ' + roomNo);
           msg = data.name + 'が入室しました';
@@ -180,9 +203,25 @@ io.sockets.on('connection', function (socket) {
           db.get(
             'chatlog',
             function(err, doc){
+              systemLogger.debug(`send log ${doc}`);
               io.to(socket.id).emit('chatinit', {chats:doc.log});
             }
-          )
+          );
+          db.get(
+            'status',
+            function(err,doc){
+              systemLogger.debug(`send status ${doc}`);
+              io.to(socket.id).emit('statusinit', {status:doc.str});
+            }
+          );
+          db.get(
+            'chits',
+            function(err,doc){
+              systemLogger.debug(`send chits ${doc}`);
+              io.to(socket.id).emit('chitsinit', {chits:doc.chits});
+            }
+          );
+
         }
         if(!err){
           systemLogger.debug('find/create room db');
@@ -232,18 +271,53 @@ io.sockets.on('connection', function (socket) {
   // チットのアップデートイベント
   socket.on('publish.requestChitUpdated',function(chit){
     systemLogger.info(`chit update ${chit.id}`);
+    rooms[roomNo].db.get('chits',function(err,doc){
+      chits = doc.chits;
+      var chitIndex = chits.findIndex((c)=>{return c.id==chit.id;});
+      if(chitIndex==-1){
+        chits.push(chit);
+      }else{
+        chits[chitIndex] = chit;
+      }
+    })
+    rooms[roomNo].db.save(
+      'chits',
+      {
+        chits : chits
+      }
+    )
     io.to(roomNo).emit('publish.requestChitUpdated',chit);
   });
 
   // チット削除要求
   socket.on('publish.requestChitDelete',function(chit){
     systemLogger.info(`chit delete ${chit.id}`);
+    rooms[roomNo].db.get('chits',function(err,doc){
+      chits = doc.chits;
+      var chitIndex = chits.findIndex((c)=>{return c.id==chit.id;});
+      if(chitIndex!=-1){
+        chits.splice(chitIndex,1);
+      }
+      rooms[roomNo].db.save(
+        'chits',
+        {
+          chits : chits
+        }
+      )
+    })
     io.to(roomNo).emit('publish.requestChitDelete',chit);
   });
 
   // ステータス項目変更要求
   socket.on('publish.statusChanged', function(status){
     systemLogger.info(`edit status ${status}`);
+    rooms[roomNo].db.save(
+      'status',
+      {
+        str : status
+      },
+      ()=>{}
+    )
     io.to(roomNo).emit('publish.statusChanged',status);
   })
 

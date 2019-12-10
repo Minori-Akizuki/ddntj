@@ -1,6 +1,6 @@
 {
   "name": "ddntj",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Playing online TRPG with HTML5",
   "main": "index.js",
   "scripts": {

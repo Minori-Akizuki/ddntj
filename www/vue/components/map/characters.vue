@@ -199,6 +199,15 @@ export default{
 	this.socketio.on('publish.statusChanged', function(status){
 		console.log(`status changed from other player ${status}`);
 		_this.setStatus(status);
+    });
+    this.socketio.on('statusinit', function(doc){
+		console.log(`status init ${doc.status}`);
+		_this.setStatus(doc.status);
+    });
+    this.socketio.on('chitsinit', function(doc){
+		console.log(`chits init ${doc}`);
+        _this.chits = doc.chits;
+        _this.chits.map((c)=>_this.$emit('update:chit',c));
 	});
   },
   methods:{
