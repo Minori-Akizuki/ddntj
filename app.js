@@ -357,4 +357,15 @@ io.sockets.on('connection', function (socket) {
       })
     )
   })
+  // 画像削除要求
+  socket.on('publish.deleteImage',function(i){
+    systemLogger.info(`delete image ${i.id} ${i.name}`);
+    db_master.get('images', (err,doc)=>{
+      images = doc.images;
+      var index = images.findIndex((_i)=>{return _i.id==i.id});
+      images.splice(index,1);
+      db_master.save('images',{images:images})
+      io.emit('publish.deleteImage',i)
+    })
+  })
 });

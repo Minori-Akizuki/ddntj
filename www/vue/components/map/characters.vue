@@ -236,7 +236,7 @@ export default{
     },
     deleteChit: function(chit){
         console.log(`delete chit ${chit.id}`);
-        var index = this.chits.findIndex((c)=>{c.id==chit.id});
+        var index = this.chits.findIndex((c)=>{return c.id==chit.id});
         this.chits.splice(index,1);
         this.$emit('delete:chit',chit);
     },

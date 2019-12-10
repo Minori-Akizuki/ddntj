@@ -12,6 +12,7 @@
             :src="selectedImage.bin"
             class="preview-item-file" >
         {{selectedImage.name}}
+        <b-button @click="deleteImage">画像削除</b-button>
         <hr/>
         <div id="uploadform">
             <div class="preview-item">
@@ -35,6 +36,7 @@
                 size="sm"
                 @change="onFileChange"></b-form-file>
         </div>
+        <b-button @click="$emit('closeImageWindow')">閉じる</b-button>
     </div>
 </template>
 
@@ -46,11 +48,12 @@ export default{
             uploadedImage : '',
             selectedImage : {},
             img_name : '',
-            imageList : []
+            imageList : this.imageList_prop
         }
     },
     props :[
-        'socketio'
+        'socketio',
+        'imageList_prop'
     ],
     created : function(){
         var _this = this;
@@ -61,7 +64,13 @@ export default{
         this.socketio.on('imagesinit',function(d){
             console.log('init images');
             _this.imageList = d.images;
+            _this.$emit('initImages',_this.imageList)
         });
+        this.socketio.on('publish.deleteImage',function(i){
+            console.log('delete image id ' + i.id + i.name);
+            var index = _this.imageList.findIndex((_i)=>{return _i.id==i.id});
+            _this.imageList.splice(index,1);
+        })
     },
     methods:{
         selectImage:function(i){
@@ -77,11 +86,15 @@ export default{
             reader.onload = e=>{this.uploadedImage=e.target.result};
             reader.readAsDataURL(file);
         },
+        deleteImage : function(){
+            this.socketio.emit('publish.deleteImage',this.selectedImage);
+        },
         add : function(){
             var _this = this
             this.socketio.emit('publish.uploadedImage',{
                 name : _this.img_name,
-                bin : _this.uploadedImage
+                bin : _this.uploadedImage,
+                id : Date.now().toString(16)
             })
             this.img_name = '';
             this.uploadedImage = '';

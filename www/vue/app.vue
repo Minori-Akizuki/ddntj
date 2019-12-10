@@ -11,7 +11,10 @@
     <div>
       <imagewindow 
         v-show="showImageWindow"
-        :socketio.sync="socketio"></imagewindow>
+        :socketio.sync="socketio"
+        v-bind:imageList_prop.sync="imageList"
+        @closeImageWindow="closeImageWindow"
+        @initImages="initImages"></imagewindow>
     </div>
     <div>
       <rpgmap v-if="this.enterd"
@@ -49,7 +52,8 @@ export default {
       systems: [],
       enterd : false,
       socketio : io(),
-      showImageWindow:false
+      showImageWindow:false,
+      imageList : []
     }
   },
   components: {
@@ -79,6 +83,13 @@ export default {
     },
     openImageWindow: function(){
       this.showImageWindow=true;
+    },
+    closeImageWindow: function(){
+      this.showImageWindow=false;
+    },
+    initImages : function(is){
+      console.log('init images in app');
+      this.imageList = is;
     }
   },
   created: function() {
