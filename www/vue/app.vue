@@ -1,10 +1,17 @@
 <template>
   <div>
     <div>
-      <menubar></menubar>
+      <menubar
+        @manageImage="openImageWindow"
+      ></menubar>
     </div>
     <div>
       <enter v-if="!this.enterd" v-on:enterRoom="enterRoom"></enter>
+    </div>
+    <div>
+      <imagewindow 
+        v-show="showImageWindow"
+        :socketio.sync="socketio"></imagewindow>
     </div>
     <div>
       <rpgmap v-if="this.enterd"
@@ -25,6 +32,7 @@ import menubar from './components/menubar/menubar'
 import chatbox from './components/chatbox/chatbox';
 import rpgmap from './components/map/map';
 import enter from './components/enter/enter'
+import imagewindow from './components/media/image'
 
 import dicebot from '../js/dicebot';
 import io from 'socket.io-client';
@@ -40,14 +48,16 @@ export default {
       password: '',
       systems: [],
       enterd : false,
-      socketio : io()
+      socketio : io(),
+      showImageWindow:false
     }
   },
   components: {
     menubar,
     chatbox,
     rpgmap,
-    enter
+    enter,
+    imagewindow
   },
   methods: {
     enterRoom: function(roomNo, password, yourname){
@@ -66,6 +76,9 @@ export default {
       if (!results) return null;
       if (!results[2]) return '';
       return decodeURIComponent(results[2].replace(/\+/g, " "));
+    },
+    openImageWindow: function(){
+      this.showImageWindow=true;
     }
   },
   created: function() {

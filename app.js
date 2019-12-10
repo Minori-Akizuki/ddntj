@@ -38,6 +38,18 @@ db_master.exists(function (err, exists) {
     systemLogger.info('database ddntj does not exists.');
     systemLogger.info('ddntj will make database.');
     db_master.create();
+    setTimeout( ()=>
+      db_master.save(
+        'images',
+        { images : [] },
+        function(err, res){
+          systemLogger.debug('/-init images-/')
+          systemLogger.debug(err);
+          systemLogger.debug(res);
+        }
+      ) ,
+        1000
+      )
   }
 });
 
@@ -138,10 +150,21 @@ var server = require('http').createServer(
 // socket.io イベント定義 (分割できないかな……)
 var io = require('socket.io')(server)
 // 2.イベントの定義
+
+// 入室
 io.sockets.on('connection', function (socket) {
 
   var roomNo = '';
   var username = '';
+
+  db_master.get(
+    'images',
+    function(err,doc){
+      systemLogger.debug(`send ${doc.images.length} images`);
+      io.to(socket.id).emit('imagesinit', {images:doc.images});
+    }
+  )
+  
 
   // 接続開始カスタムイベント(接続元ユーザを保存し、他ユーザへ通知)
   socket.on('connected', function (data) {
@@ -196,6 +219,7 @@ io.sockets.on('connection', function (socket) {
               systemLogger.debug(res);
             }
           )
+
         }else{
           systemLogger.info('found room DB : ' + roomNo);
           msg = data.name + 'が入室しました';
@@ -221,7 +245,6 @@ io.sockets.on('connection', function (socket) {
               io.to(socket.id).emit('chitsinit', {chits:doc.chits});
             }
           );
-
         }
         if(!err){
           systemLogger.debug('find/create room db');
@@ -320,5 +343,18 @@ io.sockets.on('connection', function (socket) {
     )
     io.to(roomNo).emit('publish.statusChanged',status);
   })
-
+  // 画像追加要求
+  socket.on('publish.uploadedImage', function(i){
+    systemLogger.info(`add image ${i.name}`);
+    db_master.get(
+      'images',(function(err,doc){
+        doc.images.push(i);
+        db_master.save(
+          'images',
+          { images:doc.images }
+        );
+        io.emit('publish.uploadedImage',i)
+      })
+    )
+  })
 });
