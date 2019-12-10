@@ -20,3 +20,4 @@ npm start
 * チャット機能
 * 部屋割り
 * ダイスBOT( https://bcdice.aimsot.net よりAPI拝借)
+* MAP機能のようなもの
