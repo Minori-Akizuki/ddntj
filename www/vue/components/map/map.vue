@@ -60,7 +60,9 @@ export default{
 	return{
     	mapfile: '',
 		chits: [],
-		snap: false
+		snap: false,
+		mapHeight : 10,
+		mapWidth : 10
 	}
   },
   props:[

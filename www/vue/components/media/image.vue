@@ -53,7 +53,8 @@ export default{
     },
     props :[
         'socketio',
-        'imageList_prop'
+        'imageList_prop',
+        'selection'
     ],
     created : function(){
         var _this = this;

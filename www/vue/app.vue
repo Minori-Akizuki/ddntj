@@ -3,6 +3,7 @@
     <div>
       <menubar
         @manageImage="openImageWindow"
+        @manageMap="openMapConfig"
       ></menubar>
     </div>
     <div>
@@ -14,7 +15,17 @@
         :socketio.sync="socketio"
         v-bind:imageList_prop.sync="imageList"
         @closeImageWindow="closeImageWindow"
-        @initImages="initImages"></imagewindow>
+        @initImages="initImages"
+        :selection="false"></imagewindow>
+    </div>
+    <div>
+      <mapconfig
+        v-show="showMapConfig"
+        :mapHeight_prop="mapHeight"
+        :mapWidth_prop="mapWidth"
+        :mapImage_prop="mapImage"
+        :mapSnapping_prop="mapSnapping"
+        ></mapconfig>
     </div>
     <div>
       <rpgmap v-if="this.enterd"
@@ -36,6 +47,7 @@ import chatbox from './components/chatbox/chatbox';
 import rpgmap from './components/map/map';
 import enter from './components/enter/enter'
 import imagewindow from './components/media/image'
+import mapconfig from './components/map/mapconfig'
 
 import dicebot from '../js/dicebot';
 import io from 'socket.io-client';
@@ -53,7 +65,12 @@ export default {
       enterd : false,
       socketio : io(),
       showImageWindow:false,
-      imageList : []
+      showMapConfig:true,
+      imageList : [],
+      mapHeight : 10,
+      mapWidth : 10,
+      mapImage : {bin:''},
+      mapSnapping : false
     }
   },
   components: {
@@ -61,7 +78,8 @@ export default {
     chatbox,
     rpgmap,
     enter,
-    imagewindow
+    imagewindow,
+    mapconfig
   },
   methods: {
     enterRoom: function(roomNo, password, yourname){
@@ -90,6 +108,9 @@ export default {
     initImages : function(is){
       console.log('init images in app');
       this.imageList = is;
+    },
+    openMapConfig : function(){
+      this.showMapConfig = true;
     }
   },
   created: function() {

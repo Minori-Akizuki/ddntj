@@ -6,6 +6,7 @@
             </b-dropdown>
             <b-dropdown id="resource" text="画像類" class="m-md-2 button" size="sm">
                 <b-dropdown-item @click="$emit('manageImage')">画像</b-dropdown-item>
+                <b-dropdown-item @click="$emit('openMapCnofig')">マップ変更</b-dropdown-item>
                 <b-dropdown-item>音源</b-dropdown-item>
                 <b-dropdown-item>動画</b-dropdown-item>
             </b-dropdown>
