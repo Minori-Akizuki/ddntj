@@ -153,9 +153,17 @@ export default{
 	 */
 	reAttachDraggable : function(){
 		console.log('reattach draggable');
+		if(this.map.snapping){
+			this.chits.map(
+				(c)=>{
+					c.position.x = Math.floor(c.position.x/50)*50;
+					c.position.y = Math.floor(c.position.y/50)*50;
+				}
+			)
+		}
 		var _this = this
 		$('.draggable').draggable();
-		var option = this.map.snapping ? { grid:[50,50] } : {}
+		var option = this.map.snapping ? { grid:[50,50] } : { grid:[1,1] };
 		$('.draggable-chit')
 			.draggable(option)
 			.off('dragstop')

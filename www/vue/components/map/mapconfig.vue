@@ -35,7 +35,8 @@
         <b-col sm="6">
             チットをスナップする
             <b-checkbox
-                v-model="map.snapping"></b-checkbox>
+                v-model="map.snapping"
+                @change="$emit('snappingChange')"></b-checkbox>
         </b-col>
         </b-row>
         <b-button @click="$emit('closeMapConfig',map)">閉じる</b-button>

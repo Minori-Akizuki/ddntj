@@ -26,10 +26,13 @@
         :imageList="imageList"
         :socketio="socketio"
         @closeMapConfig="closeMapConfig"
+        @snappingChange="snappingChange"
         ></mapconfig>
     </div>
     <div>
-      <rpgmap v-if="this.enterd"
+      <rpgmap 
+        v-if="this.enterd"
+        ref="rpgmap"
         :roomNo="roomNo"
         :socketio.sync="socketio"
         :map_prop="map"
@@ -120,6 +123,12 @@ export default {
     closeMapConfig : function(m){
       this.showMapConfig = false;
       this.map = m;
+    },
+    snappingChange : function(){
+      var _this = this;
+      this.$nextTick( ()=>
+        _this.$refs.rpgmap.reAttachDraggable()
+      )
     }
   },
   created: function() {
