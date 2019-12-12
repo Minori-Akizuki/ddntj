@@ -134,7 +134,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 #chatbox{
   border: solid #808080;
   bottom: 5px;

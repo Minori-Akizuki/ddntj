@@ -12,7 +12,12 @@
             :src="selectedImage.bin"
             class="preview-item-file" >
         {{selectedImage.name}}
-        <b-button @click="deleteImage">画像削除</b-button>
+        <b-button
+            @click="$emit('decidedImage',selectedImage)"
+            v-if="selection">画像決定</b-button>
+        <b-button 
+            @click="deleteImage"
+            v-else>画像削除</b-button>
         <hr/>
         <div id="uploadform">
             <div class="preview-item">
@@ -48,12 +53,12 @@ export default{
             uploadedImage : '',
             selectedImage : {},
             img_name : '',
-            imageList : this.imageList_prop
+            imageList : this.imagelist_prop
         }
     },
     props :[
         'socketio',
-        'imageList_prop',
+        'imagelist_prop',
         'selection'
     ],
     created : function(){
@@ -106,29 +111,14 @@ export default{
     }
 }
 </script>
-<style>
+<style scoped>
 #imageWindow{
     position: absolute;
     border: 1px solid black; 
     height: 300px;
     width: 500px;
     overflow: scroll;
-}
-
-label > input {
-  display: none;
-}
-
-label {
-  padding: 0 1rem;
-  border: solid 1px #888;
-} 
-
-label::after {
-  content: '+';
-  font-size: 1rem;
-  color: #888;
-  padding-left: 1rem;
+    z-index: 2;
 }
 
 img.preview-item-file{

@@ -2,8 +2,9 @@
   <div>
     <div>
       <menubar
+        :enterd_room="enterd"
         @manageImage="openImageWindow"
-        @manageMap="openMapConfig"
+        @openMapConfig="openMapConfig"
       ></menubar>
     </div>
     <div>
@@ -13,24 +14,26 @@
       <imagewindow 
         v-show="showImageWindow"
         :socketio.sync="socketio"
-        v-bind:imageList_prop.sync="imageList"
         @closeImageWindow="closeImageWindow"
         @initImages="initImages"
-        :selection="false"></imagewindow>
+        :selection="false"
+        :imagelist_prop="imageList"></imagewindow>
     </div>
     <div>
       <mapconfig
-        v-show="showMapConfig"
-        :mapHeight_prop="mapHeight"
-        :mapWidth_prop="mapWidth"
-        :mapImage_prop="mapImage"
-        :mapSnapping_prop="mapSnapping"
+        v-if="showMapConfig"
+        :map_prop="map"
+        :imageList="imageList"
+        :socketio="socketio"
+        @closeMapConfig="closeMapConfig"
         ></mapconfig>
     </div>
     <div>
       <rpgmap v-if="this.enterd"
         :roomNo="roomNo"
-        :socketio.sync="socketio">
+        :socketio.sync="socketio"
+        :map_prop="map"
+        :imageList="imageList">
       </rpgmap >
       <chatbox v-if="this.enterd"
         :yourname="yourname"
@@ -65,12 +68,14 @@ export default {
       enterd : false,
       socketio : io(),
       showImageWindow:false,
-      showMapConfig:true,
+      showMapConfig:false,
       imageList : [],
-      mapHeight : 10,
-      mapWidth : 10,
-      mapImage : {bin:''},
-      mapSnapping : false
+      map : {
+        height : 10,
+        width : 10,
+        image : {bin:''},
+        snapping : false
+      }
     }
   },
   components: {
@@ -111,6 +116,10 @@ export default {
     },
     openMapConfig : function(){
       this.showMapConfig = true;
+    },
+    closeMapConfig : function(m){
+      this.showMapConfig = false;
+      this.map = m;
     }
   },
   created: function() {

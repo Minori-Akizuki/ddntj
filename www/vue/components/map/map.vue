@@ -3,12 +3,20 @@
 	<characters
 		v-bind:chits_prop.sync="chits"
 		:socketio.sync="socketio"
+		:imageList="imageList"
 		@update:chit="updateChitStatusOwn"
 		@delete:chit="deleteChit"
 	>
 	</characters>
   <!-- マップ -->
-  <div id="map" class="draggable ui-widget-content">
+  <div 
+  	id="map" 
+	class="draggable ui-widget-content"
+	v-bind:style="mapStyle">
+	<!-- 背景画像 -->
+		<img 
+			:src="map.image.bin"
+			v-bind:style="mapStyle">
     <!-- チット -->
 		<div 
 			v-bind:id="'chit_'+chit.id"
@@ -58,15 +66,14 @@ class Chit {
 export default{
   data(){
 	return{
-    	mapfile: '',
+    	map : this.map_prop,
 		chits: [],
-		snap: false,
-		mapHeight : 10,
-		mapWidth : 10
 	}
   },
   props:[
-	  'socketio'
+	  'socketio',
+	  'map_prop',
+	  'imageList'
   ],
   components:{
 	  characters
@@ -144,7 +151,7 @@ export default{
 		console.log('reattach draggable');
 		var _this = this
 		$('.draggable').draggable();
-		var option = this.snap ? { grid:[50,50] } : {}
+		var option = this.map.snapping ? { grid:[50,50] } : {}
 		$('.draggable-chit')
 			.draggable(option)
 			.on(
@@ -158,6 +165,14 @@ export default{
 
 	}
   },
+  computed:{
+	  mapStyle : function(){
+		  return {
+			  'height' : this.map.height*50 + 'px',
+			  'width' : this.map.width*50 + 'px',
+		  }
+	  }
+  },
   watch : {
 	  chits : function(){
 		  console.log('catch chit edited');
@@ -170,18 +185,16 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 #map{
-	height: 500px;
-	width: 500px;
-	z-index: 1;
+	z-index: 0;
 }
 
 div[id^=chit]{
 	height: 50px;
 	width: 50px;
-	transition: all 0.2s ease-in-out;
 	position: absolute;
+	text-align: bottom;
 }
 
 </style>

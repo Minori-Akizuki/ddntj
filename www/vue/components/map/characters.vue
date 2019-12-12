@@ -192,7 +192,8 @@ export default{
   },
   props:[
      'chits_prop',
-     'socketio'
+     'socketio',
+     'imageList'
   ],
   created: function(){
     var _this = this;
@@ -299,9 +300,9 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 #characters{
-  border: solid #808080;
+  border: solid #a4b9ff;
   top: 100px;
   right: 10px;
   display: flex;

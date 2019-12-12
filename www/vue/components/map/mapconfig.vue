@@ -1,8 +1,19 @@
 <template>
 <div id="map-config-window" class="draggable resizable">
     <div id="map-preview">
-        <img id="map-image" :src="mapImage.bin"><br/>
-        <b-button>画像変更</b-button>
+        <img id="map-image" :src="map.image.bin"><br/>
+        <b-button
+            @click="openImageWindow">画像変更</b-button>
+    </div>
+    <div>
+      <imagewindow 
+        v-if="showImageWindow"
+        :socketio.sync="socketio"
+        :imageList="imageList"
+        @closeImageWindow="closeImageWindow"
+        @decidedImage="decidedImage"
+        :selection="true"
+        :imagelist_prop="imageList"></imagewindow>
     </div>
     <hr/>
     <div id="map-config">
@@ -10,42 +21,64 @@
         <b-col sm="3">
             縦マス
             <b-input 
-                v-model.number="mapHeight"
+                v-model.number="map.height"
                 type="number"
                 size="sm"></b-input>
         </b-col>
         <b-col sm="3">
             横マス
             <b-input 
-                v-model.number="mapWidth"
+                v-model.number="map.width"
                 type="number"
                 size="sm"></b-input>
         </b-col>
         <b-col sm="6">
             チットをスナップする
             <b-checkbox
-                v-model="mapSnapping"></b-checkbox>
+                v-model="map.snapping"></b-checkbox>
         </b-col>
         </b-row>
+        <b-button @click="$emit('closeMapConfig',map)">閉じる</b-button>
     </div>
+
 </div>
 </template>
 <script>
+import imagewindow from '../media/image'
+
 export default{
     data(){
         return{
-            mapHeight : this.mapHeight_prop,
-            mapWidth : this.mapWidth_prop,
-            mapImage : this.mapImage_prop,
-            mapSnapping : this.mapSnapping_prop
+            map : this.map_prop,
+            showImageWindow : false
         }
     },
+    components: {
+        imagewindow
+    },
     props:[
-        'mapHeight_prop',
-        'mapWidth_prop',
-        'mapImage_prop',
-        'mapSnapping_prop'
-    ]
+        'map_prop',
+        'socketio',
+        'imageList'
+    ],
+    methods:{
+        openImageWindow : function(){
+            console.log('open');
+            this.showImageWindow = true;
+        },
+        closeImageWindow : function(){
+            this.showImageWindow = false;
+        },
+        decidedImage : function(i){
+            console.log(i);
+            this.showImageWindow = false;
+            this.map.image = i;
+        }
+    },
+    mounted(){
+        $('.draggable').draggable();
+        $(".resizable").resizable();
+    }
 }
 </script>
 <style scoped>
@@ -55,6 +88,7 @@ export default{
     height: 300px;
     width: 500px;
     overflow: scroll;
+    z-index: 2;
 }
 #map-image{
     height: 100px;
