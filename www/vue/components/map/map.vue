@@ -103,7 +103,9 @@ export default{
 		*/
 	updateChitStatus: function(chit){
 		var _this = this;
-		console.log(`update chit ${chit}`)
+		console.log(`update chit`);
+		console.log(chit);
+
 		var chitIndex = this.chits.findIndex((_chit)=>{return _chit.id==chit.id;});
 		if(chitIndex >= 0){
 			this.$set(this.chits,chitIndex,chit);
@@ -111,21 +113,23 @@ export default{
 			this.chits.push(chit);
 
 		}
-		$('#chit_'+chit.id).css({
-			top: chit.position.y,
-			left: chit.position.x
-		})
 		this.chits.sort(function(a,b){
 			return b.initiative - a.initiative;
 		})
-		this.$nextTick( () => {_this.reAttachDraggable();} );
+		this.$nextTick( () => {
+			_this.reAttachDraggable();
+			$('#chit_'+chit.id).css({
+				top: chit.position.y,
+				left: chit.position.x
+			})
+		} );
 		return;
 	},
 	updateChitStatusOther:function(chit){
 		this.updateChitStatus(chit);
 	},
 	updateChitStatusOwn:function(chit){
-		this.updateChitStatus(chit);
+		// this.updateChitStatus(chit);
 		this.socketio.emit('publish.requestChitUpdated',chit);
 	},
 	deleteChit : function(chit){
@@ -154,16 +158,17 @@ export default{
 		var option = this.map.snapping ? { grid:[50,50] } : {}
 		$('.draggable-chit')
 			.draggable(option)
+			.off('dragstop')
 			.on(
 				'dragstop',
 				function(event,ui){
-					console.log('dragged chit')
+					console.log('------ dragged chit')
 					console.log(ui);
 					var chit =_this.convertUitoChit(ui);
 					_this.updateChitStatusOwn(chit)
 			});
 
-	}
+	},
   },
   computed:{
 	  mapStyle : function(){
