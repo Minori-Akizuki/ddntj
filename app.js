@@ -220,6 +220,20 @@ io.sockets.on('connection', function (socket) {
               systemLogger.debug(res);
             }
           )
+          db.save(
+            'map',
+            {
+              height : 10,
+              width : 10,
+              image : {bin:''},
+              snapping : false
+            },
+            function(err, res){
+              systemLogger.debug('/-init map-/')
+              systemLogger.debug(err);
+              systemLogger.debug(res);
+            }
+          )
 
         }else{
           systemLogger.info('found room DB : ' + roomNo);
@@ -246,6 +260,13 @@ io.sockets.on('connection', function (socket) {
               io.to(socket.id).emit('chitsinit', {chits:doc.chits});
             }
           );
+          db.get(
+            'map',
+            function(err,doc){
+              systemLogger.debug(`send map`);
+              io.to(socket.id).emit('mapinit', {map:doc.map});
+            }            
+          )
         }
         if(!err){
           systemLogger.debug('find/create room db');
@@ -369,9 +390,15 @@ io.sockets.on('connection', function (socket) {
       io.emit('publish.deleteImage',i)
     })
   })
-
+  // マップ変更要求
   socket.on('publish.mapConfigChanged', function(m){
     systemLogger.info('map config changed');
+    systemLogger.debug(m);
+    rooms[roomNo].db.save(
+      'map',
+      {map: m}
+    );
+    io.to(roomNo).emit('publish.mapConfigChanged',m);
   });
 
 });

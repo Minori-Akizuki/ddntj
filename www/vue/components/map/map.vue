@@ -95,6 +95,18 @@ export default{
 			_this.chits.splice(index,1);
 		}
 	});
+	this.socketio.on('mapinit', function(d){
+		console.log('mapinit');
+		console.log(d);
+		console.log(_this.map);
+		Object.assign(_this.map,d.map);
+		console.log(_this.map);
+	});
+	this.socketio.on('publish.mapConfigChanged',function(m){
+		console.log('map changed');
+		console.log(m);
+		Object.assign(_this.map, m);
+	});
   },
   methods:{
 	/*

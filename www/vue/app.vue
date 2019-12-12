@@ -122,7 +122,8 @@ export default {
     },
     closeMapConfig : function(m){
       this.showMapConfig = false;
-      this.map = m;
+      Object.assign(this.map,m);
+      this.socketio.emit('publish.mapConfigChanged',m);
     },
     snappingChange : function(){
       var _this = this;
