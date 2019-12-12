@@ -157,6 +157,7 @@ io.sockets.on('connection', function (socket) {
   var roomNo = '';
   var username = '';
 
+  // 画像送信
   db_master.get(
     'images',
     function(err,doc){
@@ -368,4 +369,9 @@ io.sockets.on('connection', function (socket) {
       io.emit('publish.deleteImage',i)
     })
   })
+
+  socket.on('publish.mapConfigChanged', function(m){
+    systemLogger.info('map config changed');
+  });
+
 });
