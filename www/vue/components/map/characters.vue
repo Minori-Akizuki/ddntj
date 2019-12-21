@@ -302,7 +302,8 @@ export default{
 
 <style scoped>
 #characters{
-  border: solid #a4b9ff;
+    border: solid #808080;
+  background: rgb(243, 243, 243);
   top: 100px;
   right: 10px;
   display: flex;
