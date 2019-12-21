@@ -2,18 +2,36 @@
   <div id="chatbox" class="draggable resizable ui-widget-content">
     <div id="chatmessages" @scroll="manageUpdateFlag()">
       <div class="spacer"></div>
-      <div class="message" v-for="message in messages" v-cloak :key="message.id">{{message.text}}</div>
+      <div 
+        class="message" 
+        v-for="message in messages" 
+        v-cloak :key="message.id"
+        v-bind:style="{color:message.color}" >{{message.text}}</div>
     </div>
     <div class="input-settings">
-      <!-- 名前 -->
-      <input
-        v-model="name"
-      >
-      <!-- システム選択 -->
-      <select v-model="selectedSystem" name="systems" size="1">
-        <option selected></option>
-        <option v-for="system in systems" :key="system.system" :value="system.system">{{system.name}}</option>
-      </select>
+      <b-container fluid>
+        <!-- 名前 -->
+        <b-row>
+          <b-col sm="3">
+            <input
+              v-model="name"
+            >
+          </b-col>
+          <!-- システム選択 -->
+          <b-col sm="5">
+            <select v-model="selectedSystem" name="systems" size="1">
+              <option selected></option>
+              <option v-for="system in systems" :key="system.system" :value="system.system">{{system.name}}</option>
+            </select>
+          </b-col>
+          <b-col sm="1">
+            <b-form-input
+              id="textcolor"
+              type="color"
+              v-model="inputColor"></b-form-input>
+          </b-col>
+        </b-row>
+      </b-container>
     </div>
     <div class="input-area">
       <textarea
@@ -22,13 +40,14 @@
         placeholder="input message here"
         class="input-box"
       />
-      <button
+      <b-button
         @click="sendMessage"
         id="button"
         class="enter-button"
+        v-model="inputColor"
       >
       send Message
-      </button>
+      </b-button>
     </div>
   </div>
 </template>
@@ -43,6 +62,7 @@ export default {
       messages: [],
       totalMessageId: 0 ,
       inputbox: '',
+      inputColor:'',
       selectedSystem: 'DiceBot',
       name: this.yourname,
       update: true,
@@ -59,17 +79,17 @@ export default {
     var _addMessage = this.addMessage;
     this.socketio.on('chatinit', function(data){
       console.log(data);
-      data.chats.forEach(text => {
-        _addMessage(text);
+      data.chats.forEach(log => {
+        _addMessage(log);
       });
     });
     this.socketio.on('connected', function(data){
       console.log(data);
-      _addMessage(data.text);
+      _addMessage(data);
     });
     this.socketio.on('publish.chat',function(data){
       console.log('receve publsh : ' + data);
-      _addMessage(data.text);
+      _addMessage(data);
     });
     this.addMessage("貴方は" + this.roomNo + "番の部屋に入室しました");
     return;
@@ -79,7 +99,8 @@ export default {
       const messageBox = document.getElementById('chatmessages');
       this.messages.push({
         id:(this.totalMessageId++),
-        text:msg
+        text:msg.text,
+        color:msg.color
       });
       if (this.update) {
         this.$nextTick(function() {
@@ -98,6 +119,7 @@ export default {
       const textInput = this.inputbox;
       const name = this.yourname;
       const system = this.selectedSystem;
+      const color = this.inputColor
 
       if(textInput === ''){ return; }
       const _msg = "[" + name + "] " + textInput;
@@ -106,7 +128,8 @@ export default {
         {
           'system': system,
           'text': textInput,
-          'name': name
+          'name': name,
+          'color' : color
         }
       );
       this.inputbox = '';

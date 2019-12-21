@@ -294,11 +294,11 @@ io.sockets.on('connection', function (socket) {
         }
         systemLogger.debug(msg);
         msg = `${data.name}${msg}`;
-        io.to(roomNo).emit('publish.chat', {'text': msg});
+        io.to(roomNo).emit('publish.chat', {'text': msg, 'color' : data.color});
         rooms[roomNo].db.get('chatlog',function(err, doc){
           systemLogger.debug(doc);
           var _log = doc.log;
-          _log.push(msg);
+          _log.push({'text': msg, 'color' : data.color});
           rooms[roomNo].db.save('chatlog', { log:_log});
         });
       },
