@@ -6,6 +6,7 @@
 		:imageList="imageList"
 		@update:chit="updateChitStatusOwn"
 		@delete:chit="deleteChit"
+		@openimagewindow="openimagewindow"
 	>
 	</characters>
   <!-- マップ -->
@@ -18,12 +19,16 @@
 			:src="map.image.bin"
 			v-bind:style="mapStyle">
     <!-- チット -->
-		<div 
+		<div
 			v-bind:id="'chit_'+chit.id"
 			v-for="chit in chits"
 			v-bind:key="chit.id"
-			class="draggable-chit ui-widget-content"
-		>{{chit.name}}</div>
+			class="draggable-chit ui-widget-content">
+			<img 
+				:src="chitimage(chit)"
+				:id="'chitimg_'+chit.id">
+			{{chit.name}}
+		</div>
   </div>
 </div>
 </template>
@@ -32,7 +37,6 @@
 import io from 'socket.io-client';
 import Vue from 'vue'
 import characters from './characters'
-
 
 class Vector2d{
 	constructor(x,y){
@@ -76,7 +80,7 @@ export default{
 	  'imageList'
   ],
   components:{
-	  characters
+		characters,
   },
   created: function(){
 	var _this = this;
@@ -160,6 +164,12 @@ export default{
 		console.log('conv chit [' + this.chits.findIndex((_chit)=>{return _chit.id==id;}) + '] to : ' +  chit.toString());
 		return chit;
 	},
+	openimagewindow : function(callback){
+		this.$emit('openimagewindow', callback);
+	},
+	chitimage : function(chit){
+		return chit.img ? chit.img.bin : '';
+	},
 	/**
 	 * re-attach draggable
 	 */
@@ -220,6 +230,11 @@ div[id^=chit]{
 	width: 50px;
 	position: absolute;
 	text-align: bottom;
+}
+
+img[id^=chitimg]{
+	height: 50px;
+	width: 50px;
 }
 
 </style>

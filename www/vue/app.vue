@@ -16,8 +16,10 @@
         :socketio.sync="socketio"
         @closeImageWindow="closeImageWindow"
         @initImages="initImages"
-        :selection="false"
-        :imagelist_prop="imageList"></imagewindow>
+        @decidedImage="closeImageWindow"
+        :selection="imgSelection"
+        :imagelist_prop="imageList"
+        :decidedCallback="decidedCallback"></imagewindow>
     </div>
     <div>
       <mapconfig
@@ -36,7 +38,8 @@
         :roomNo="roomNo"
         :socketio.sync="socketio"
         :map_prop="map"
-        :imageList="imageList">
+        :imageList="imageList"
+        @openimagewindow="openImageWindow">
       </rpgmap >
       <chatbox v-if="this.enterd"
         :yourname="yourname"
@@ -73,12 +76,14 @@ export default {
       showImageWindow:false,
       showMapConfig:false,
       imageList : [],
+      imgSelection : false,
       map : {
         height : 10,
         width : 10,
         image : {bin:''},
         snapping : false
-      }
+      },
+      decidedCallback : null
     }
   },
   components: {
@@ -107,7 +112,13 @@ export default {
       if (!results[2]) return '';
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     },
-    openImageWindow: function(){
+    openImageWindow: function(callback){
+      if(callback){
+        this.imgSelection = true;
+      } else {
+        this.imgSelection = false;
+      }
+      this.decidedCallback = callback;
       this.showImageWindow=true;
     },
     closeImageWindow: function(){

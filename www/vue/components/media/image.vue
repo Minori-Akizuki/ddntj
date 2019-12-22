@@ -13,7 +13,7 @@
             class="preview-item-file" >
         {{selectedImage.name}}
         <b-button
-            @click="$emit('decidedImage',selectedImage)"
+            @click="decidedImage"
             v-if="selection">画像決定</b-button>
         <b-button 
             @click="deleteImage"
@@ -59,7 +59,8 @@ export default{
     props :[
         'socketio',
         'imagelist_prop',
-        'selection'
+        'selection',
+        'decidedCallback'
     ],
     created : function(){
         var _this = this;
@@ -107,6 +108,12 @@ export default{
         },
         remove : function(){
             this.uploadedImage=false;
+        },
+        decidedImage : function(){
+            if(this.decidedCallback){
+                this.decidedCallback(this.selectedImage);
+            }
+            this.$emit('decidedImage',this.selectedImage);
         }
     }
 }

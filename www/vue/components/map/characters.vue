@@ -41,7 +41,29 @@
                         @change="$emit('update:chit',chit)"></b-textarea></td>
                 <td>
                     <b-button v-b-modal="'edit'+chit.id" size=sm>編集</b-button>
-                    <b-modal :id="'edit'+chit.id" title="キャラ編集">
+                    <b-modal 
+                        :id ="'edit'+chit.id"
+                        :ref="'edit'+chit.id" 
+                        title="キャラ編集"
+                        ok-only>
+                        <b-modal 
+                            title="画像選択"
+                            size="lg"
+                            :id="'img'+chit.id"
+                            :ref="'img'+chit.id"
+                            ok-only>
+                            <imagewindow 
+                                :socketio.sync="socketio"
+                                :imageList="imageList"
+                                @closeImageWindow="$refs['img'+chit.id][0].hide()"
+                                @decidedImage="decidedImage"
+                                :selection="true"
+                                :imagelist_prop="imageList"
+                                :decidedCallback="decidedImageCallback"></imagewindow>
+                        </b-modal>
+                        <img 
+                            :src="chit.img.bin"
+                            @click="openImageList(chit)"/>
                         <table>
                             <tr>
                                 <th>In</th>
@@ -106,7 +128,27 @@
             title="チット追加"
             @ok="addNewChit"
             size="lg"
+            ref="newChitModal"
         >
+            <b-modal   
+                title="画像選択"
+                size="lg"
+                id="newimg"
+                ref="newimg"
+                ok-only>
+                <imagewindow 
+                    :socketio.sync="socketio"
+                    :imageList="imageList"
+                    @closeImageWindow="$refs['newimg'].hide()"
+                    @decidedImage="decidedImage"
+                    :selection="true"
+                    :imagelist_prop="imageList"
+                    :decidedCallback="decidedImageCallback"></imagewindow>
+            </b-modal>
+            <img 
+                :src="newChit.img.bin"
+                @click="openImageListNew(newChit)"/>
+                
             <table>
             <tr>
                 <th>In</th>
@@ -169,6 +211,7 @@
 <script>
 import io from 'socket.io-client';
 import Vue from 'vue'
+import imagewindow from '../media/image'
 
 class Vector2d{
 	constructor(x,y){
@@ -187,8 +230,13 @@ export default{
         ],
         statusStr: 'HP MP *poizon',
         newChit : {},
-        chits : this.chits_prop
+        chits : this.chits_prop,
+        showImageWindow : false,
+        decidedImageCallback : null
 	}
+  },
+  components:{
+      imagewindow
   },
   props:[
      'chits_prop',
@@ -222,7 +270,8 @@ export default{
         chit.status = _chit.status ?
             _chit.status.map( (s) =>{return Object.assign({},s);} ) : 
             this.statusName.map( (s) => {return Object.assign({},s);});
-		chit.memo = _chit.memo || '';
+        chit.memo = _chit.memo || '';
+        chit.img = _chit.img || {'bin':''};
 		chit.toString = function (){
 			return `chit : ${this.id},${this.name},${this.position.x},${this.position.y}`
 		};
@@ -287,6 +336,33 @@ export default{
         // 雛形のセット
         this.newChit = this.copyNewChit({});
     },
+    openImageList : function(chit){
+        var _this = this;
+        this.decidedImageCallback=function(image){
+            chit.img = image;
+            _this.$refs['img'+chit.id][0].hide();
+            _this.$emit('update:chit',chit);
+        };
+        console.log(this.$refs['img'+chit.id]);
+        this.$refs['img'+chit.id][0].show();
+        // this.$emit('openimagewindow', this.decidedImageCallback);
+    },
+    openImageListNew : function(chit){
+        var _this = this;
+        this.decidedImageCallback=function(image){
+            chit.img = image;
+            _this.$refs['newimg'].hide();
+        };
+        console.log(this.$refs['newimg']);
+        this.$refs['newimg'].show();
+        // this.$emit('openimagewindow', this.decidedImageCallback);
+    },
+    closeImageWindow : function(chit){
+
+    },
+    decidedImage : function(image){
+        this.showImageWindow = false;
+    },
   },
   watch : {
       chits_prop : function(old, chits){
@@ -326,5 +402,9 @@ th.memo{
 table#list {
     table-layout: fixed;
     width: 100%;
+}
+img{
+    height: 50px;
+    width: 50px;
 }
 </style>
