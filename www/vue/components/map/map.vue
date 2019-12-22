@@ -28,6 +28,11 @@
 				:src="chitimage(chit)"
 				:id="'chitimg_'+chit.id">
 			{{chit.name}}
+			<b-tooltip 
+				:target="'chit_'+chit.id"
+				triggers="hover">
+				<pre>{{chit.memo}}</pre>
+			</b-tooltip>
 		</div>
   </div>
 </div>
@@ -235,6 +240,10 @@ div[id^=chit]{
 img[id^=chitimg]{
 	height: 50px;
 	width: 50px;
+}
+
+pre{
+	color: white;
 }
 
 </style>
