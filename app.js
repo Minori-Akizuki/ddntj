@@ -23,7 +23,7 @@ var conn = new(cradle.Connection)(
   constants.DB_PORT
 );
 
-var db_master = conn.database('ddntj');
+var db_master = conn.database(constants.DB_PREFIX);
 var rooms = [];
 
 var apis = require('./js/apis').apis(db_master,rooms);
@@ -33,9 +33,9 @@ db_master.exists(function (err, exists) {
   if (err) {
     systemLogger.info('DB error', err);
   } else if (exists) {
-    systemLogger.info('found DB ddntj.');
+    systemLogger.info(`found DB ${constants.DB_PREFIX}.`);
   } else {
-    systemLogger.info('database ddntj does not exists.');
+    systemLogger.info(`database ${constants.DB_PREFIX} does not exists.`);
     systemLogger.info('ddntj will make database.');
     db_master.create();
     setTimeout( ()=>
@@ -55,7 +55,7 @@ db_master.exists(function (err, exists) {
 
 // setup room
 for(roomNo = 0; roomNo <= constants.ROOM_TOTAL; roomNo++){
-  roomDbName = 'ddntj_room_'+roomNo;
+  roomDbName = constants.DB_PREFIX + '_room_' + roomNo;
   rooms[roomNo] = {db:conn.database(roomDbName)};
 }
 
