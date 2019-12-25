@@ -1,7 +1,7 @@
 <template>
 <div id="map-config-window" class="draggable resizable">
     <div id="map-preview">
-        <img id="map-image" :src="map.image.bin"><br/>
+        <img id="map-image" :src="mapImage(map)"><br/>
         <b-button
             @click="openImageWindow">画像変更</b-button>
     </div>
@@ -71,10 +71,18 @@ export default{
             this.showImageWindow = false;
         },
         decidedImage : function(i){
+            console.log('--- decidedImage(map)')
             console.log(i);
             this.showImageWindow = false;
-            this.map.image = i;
-        }
+            var m_image = Object.assign({},i);
+            delete m_image.bin;
+            this.map.image = m_image;
+        },
+        mapImage : function(map){
+            return map.image.id ? 
+                this.imageList.fromId(map.image.id).bin :
+                '';
+        },
     },
     mounted(){
         $('.draggable').draggable();

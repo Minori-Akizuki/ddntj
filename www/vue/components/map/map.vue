@@ -16,7 +16,7 @@
 	v-bind:style="mapStyle">
 	<!-- 背景画像 -->
 		<img 
-			:src="map.image.bin"
+			:src="mapImage(map)"
 			v-bind:style="mapStyle">
     <!-- チット -->
 		<div
@@ -175,6 +175,11 @@ export default{
 	chitimage : function(chit){
 		return chit.img ? 
 			this.imageList.fromId(chit.img.id).bin : 
+			'';
+	},
+	mapImage : function(map){
+		return map.image ? 
+			this.imageList.fromId(map.image.id).bin :
 			'';
 	},
 	/**
