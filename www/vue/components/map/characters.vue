@@ -62,7 +62,7 @@
                                 :decidedCallback="decidedImageCallback"></imagewindow>
                         </b-modal>
                         <img 
-                            :src="chit.img.bin"
+                            :src="imgFromChit(chit)"
                             @click="openImageList(chit)"/>
                         <table>
                             <tr>
@@ -146,7 +146,7 @@
                     :decidedCallback="decidedImageCallback"></imagewindow>
             </b-modal>
             <img 
-                :src="newChit.img.bin"
+                :src="imgFromChit(newChit)"
                 @click="openImageListNew(newChit)"/>
                 
             <table>
@@ -339,7 +339,10 @@ export default{
     openImageList : function(chit){
         var _this = this;
         this.decidedImageCallback=function(image){
-            chit.img = image;
+            console.log('--- decidedImageCallback')
+            chit.img = Object.assign({},image);
+            delete chit.img.bin;
+            console.log(chit)
             _this.$refs['img'+chit.id][0].hide();
             _this.$emit('update:chit',chit);
         };
@@ -350,7 +353,10 @@ export default{
     openImageListNew : function(chit){
         var _this = this;
         this.decidedImageCallback=function(image){
-            chit.img = image;
+            console.log('--- decidedImageCallback(new)')
+            chit.img = Object.assign({},image);
+            delete chit.img.bin;
+            console.log(chit);
             _this.$refs['newimg'].hide();
         };
         console.log(this.$refs['newimg']);
@@ -363,6 +369,19 @@ export default{
     decidedImage : function(image){
         this.showImageWindow = false;
     },
+    imgFromChit : function(chit){
+        console.log('--- imgFromChit')
+        console.log(chit);
+        var img = chit.img && chit.img.id ? 
+            this.imageList.fromId(chit.img.id) : 
+            {};
+            console.log(img);
+        // TODO : このreturnを遅延させる必要がある
+        return img.bin;
+    }
+  },
+  computed : {
+      
   },
   watch : {
       chits_prop : function(old, chits){

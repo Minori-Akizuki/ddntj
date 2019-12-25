@@ -173,7 +173,9 @@ export default{
 		this.$emit('openimagewindow', callback);
 	},
 	chitimage : function(chit){
-		return chit.img ? chit.img.bin : '';
+		return chit.img ? 
+			this.imageList.fromId(chit.img.id).bin : 
+			'';
 	},
 	/**
 	 * re-attach draggable

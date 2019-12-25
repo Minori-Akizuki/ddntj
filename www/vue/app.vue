@@ -75,7 +75,16 @@ export default {
       socketio : io(),
       showImageWindow:false,
       showMapConfig:false,
-      imageList : [],
+      imageList : {
+        list : [],
+        fromId : function(_id){
+          console.log('--- imagelist.fromId');
+          console.log(this.list);
+          var image = this.list.find(i=>i.id==_id);
+          console.log(image);
+          return image;
+        }
+      },
       imgSelection : false,
       map : {
         height : 10,

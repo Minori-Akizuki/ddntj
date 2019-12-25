@@ -2,7 +2,7 @@
     <div id="imageWindow" class="draggable resizable ui-widget-content">
         <div id="image-list">
             <img 
-                v-for="image in imageList" 
+                v-for="image in imageList.list" 
                 :key="image.name" 
                 :src="image.bin"
                 @click="selectImage(image)"
@@ -66,17 +66,17 @@ export default{
         var _this = this;
         this.socketio.on('publish.uploadedImage',function(i){
             console.log('uploaded image');
-            _this.imageList.push(i);
+            _this.imageList.list.push(i);
         });
         this.socketio.on('imagesinit',function(d){
             console.log('init images');
-            _this.imageList = d.images;
+            _this.imageList.list = d.images;
             _this.$emit('initImages',_this.imageList)
         });
         this.socketio.on('publish.deleteImage',function(i){
             console.log('delete image id ' + i.id + i.name);
-            var index = _this.imageList.findIndex((_i)=>{return _i.id==i.id});
-            _this.imageList.splice(index,1);
+            var index = _this.imageList.list.findIndex((_i)=>{return _i.id==i.id});
+            _this.imageList.list.splice(index,1);
         })
     },
     methods:{
