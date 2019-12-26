@@ -29,6 +29,7 @@
 				:id="'chitimg_'+chit.id">
 			{{chit.name}}
 			<b-tooltip 
+				v-if="chit.memo!=''"
 				:target="'chit_'+chit.id"
 				triggers="hover">
 				<pre>{{chit.memo}}</pre>
