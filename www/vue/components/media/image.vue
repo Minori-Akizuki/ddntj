@@ -3,7 +3,7 @@
         <div id="image-list">
             <img 
                 v-for="image in imageList.list" 
-                :key="image.name" 
+                :key="image.id" 
                 :src="image.bin"
                 @click="selectImage(image)"
                 class="preview-item-file"/>
