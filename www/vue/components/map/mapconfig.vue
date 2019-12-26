@@ -79,7 +79,7 @@ export default{
             this.map.image = m_image;
         },
         mapImage : function(map){
-            return map.image.id ? 
+            return map.image ? 
                 this.imageList.fromId(map.image.id).bin :
                 '';
         },

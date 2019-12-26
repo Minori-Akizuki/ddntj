@@ -89,7 +89,7 @@ export default {
       map : {
         height : 10,
         width : 10,
-        image : {bin:''},
+        image : null,
         snapping : false
       },
       decidedCallback : null
