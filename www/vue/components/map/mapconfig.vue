@@ -79,9 +79,11 @@ export default{
             this.map.image = m_image;
         },
         mapImage : function(map){
-            return map.image ? 
-                this.imageList.fromId(map.image.id).bin :
-                '';
+            if(map.image){
+                var image = this.imageList.fromId(map.image.id);
+                return image ? image.bin : '' ;
+            }
+            return '';
         },
     },
     mounted(){

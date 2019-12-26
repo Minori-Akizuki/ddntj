@@ -173,14 +173,18 @@ export default{
 		this.$emit('openimagewindow', callback);
 	},
 	chitimage : function(chit){
-		return chit.img ? 
-			this.imageList.fromId(chit.img.id).bin : 
-			'';
+		if(chit.img){
+			var image = this.imageList.fromId(chit.img.id);
+			return image ? image.bin : '' ;
+		}
+		return '';
 	},
 	mapImage : function(map){
-		return map.image ? 
-			this.imageList.fromId(map.image.id).bin :
-			'';
+		if(map.image){
+			var image = this.imageList.fromId(map.image.id);
+			return image ? image.bin : '' ;
+		}
+		return '';
 	},
 	/**
 	 * re-attach draggable
