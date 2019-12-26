@@ -19,8 +19,11 @@ const publicPath = './dist'
 // DB関連
 // セットアップ
 var conn = new(cradle.Connection)(
-  constants.DB_URL,
-  constants.DB_PORT
+  {
+    host : constants.DB_URL,
+    port : constants.DB_PORT,
+    auth : constants.DB_USERPASS
+  }
 );
 
 var db_master = conn.database(constants.DB_PREFIX);
