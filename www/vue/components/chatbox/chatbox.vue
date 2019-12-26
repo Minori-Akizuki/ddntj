@@ -117,7 +117,7 @@ export default {
       event.stopPropagation();
       event.preventDefault();
       const textInput = this.inputbox;
-      const name = this.yourname;
+      const name = this.name;
       const system = this.selectedSystem;
       const color = this.inputColor
 
