@@ -11,6 +11,11 @@ exports.dicebot = function(){
   var _dicebot = {
 
     roll : function(callback, system, command){
+      // 半角英数字で始まらない文字列はAPIに送らない
+      if(!command.match(/^[A-Za-z0-9]/)){
+        callback({'ok': false});
+        return;
+      }
       var _command = encodeURIComponent(command);
       var reqUrl = `${BOTURL}diceroll?system=${system}&command=${_command}`;
       systemLogger.debug(`requrl : ${reqUrl}`);
