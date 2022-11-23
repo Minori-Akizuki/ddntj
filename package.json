@@ -30,7 +30,7 @@
     "forever": "^0.15.3",
     "jquery": "^3.2.1",
     "log4js": "^2.3.3",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.0",
     "socket.io-client": "^2.3.0",
     "style-loader": "^1.0.0",
     "vue": "^2.6.10"
